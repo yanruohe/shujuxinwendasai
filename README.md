@@ -1,1 +1,3367 @@
 # shujuxinwendasai
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>湖畔东风起——武汉东湖叩问“世界级”</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script>
+        if (typeof echarts === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"><\/script>');
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <script>
+        var fontSizes = [0.9, 1.0, 1.15];
+        var fontSizeIndex = 1;
+        var isEyeCareMode = false;
+        var isReading = false;
+
+        function toggleFontSize() {
+            fontSizeIndex = (fontSizeIndex + 1) % fontSizes.length;
+            document.body.style.fontSize = fontSizes[fontSizeIndex] + 'em';
+        }
+
+        function toggleEyeCare() {
+            isEyeCareMode = !isEyeCareMode;
+            var btn = document.getElementById('btnEyeCare');
+            
+            if (isEyeCareMode) {
+                btn.classList.add('active');
+                
+                document.body.style.backgroundColor = '#e8f5e9';
+                
+                var sections = document.querySelectorAll('section');
+                sections.forEach(function(section) {
+                    section.style.backgroundColor = '#e8f5e9';
+                });
+                
+                var whiteCards = document.querySelectorAll('.bg-white');
+                whiteCards.forEach(function(card) {
+                    if (card.id !== 'accessPanel' && !card.classList.contains('access-btn')) {
+                        card.style.backgroundColor = '#f1f8e9';
+                    }
+                });
+                
+                var texts = document.querySelectorAll('p.text-[#6b7280]');
+                texts.forEach(function(text) {
+                    text.style.color = '#4caf50';
+                });
+                
+                var chartBgs = document.querySelectorAll('[class*="bg-[#e6f2fa]"]');
+                chartBgs.forEach(function(el) {
+                    el.style.backgroundColor = '#e8f5e9';
+                });
+            } else {
+                btn.classList.remove('active');
+                
+                document.body.style.backgroundColor = '';
+                
+                var sections = document.querySelectorAll('section');
+                sections.forEach(function(section) {
+                    section.style.backgroundColor = '';
+                });
+                
+                var whiteCards = document.querySelectorAll('.bg-white');
+                whiteCards.forEach(function(card) {
+                    card.style.backgroundColor = '';
+                });
+                
+                var texts = document.querySelectorAll('p.text-[#6b7280]');
+                texts.forEach(function(text) {
+                    text.style.color = '';
+                });
+                
+                var chartBgs = document.querySelectorAll('[class*="bg-[#e6f2fa]"]');
+                chartBgs.forEach(function(el) {
+                    el.style.backgroundColor = '';
+                });
+            }
+        }
+
+        var readParagraphs = [];
+        var currentParagraphIndex = 0;
+
+        function toggleRead() {
+            var btn = document.getElementById('btnRead');
+            
+            if (isReading) {
+                window.speechSynthesis.cancel();
+                isReading = false;
+                btn.classList.remove('active');
+                return;
+            }
+            
+            if (!('speechSynthesis' in window)) {
+                alert('您的浏览器不支持语音朗读功能，请使用Chrome浏览器');
+                return;
+            }
+            
+            var textElements = document.querySelectorAll('p[class*="text-[#6b7280]"]');
+            readParagraphs = [];
+            textElements.forEach(function(p) {
+                var text = p.textContent.trim();
+                if (text) readParagraphs.push(text);
+            });
+            
+            if (readParagraphs.length === 0) {
+                alert('没有找到可朗读的文本');
+                return;
+            }
+            
+            currentParagraphIndex = 0;
+            window.speechSynthesis.cancel();
+            
+            function speakNext() {
+                if (currentParagraphIndex >= readParagraphs.length || !isReading) {
+                    isReading = false;
+                    btn.classList.remove('active');
+                    return;
+                }
+                
+                var text = readParagraphs[currentParagraphIndex];
+                var utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'zh-CN';
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                
+                var voices = window.speechSynthesis.getVoices();
+                var zhVoice = voices.find(function(v) {
+                    return v.lang === 'zh-CN' || v.lang === 'zh';
+                });
+                if (zhVoice) {
+                    utterance.voice = zhVoice;
+                }
+                
+                utterance.onerror = function(e) {
+                    console.error('语音合成错误:', e);
+                    isReading = false;
+                    btn.classList.remove('active');
+                };
+                
+                utterance.onend = function() {
+                    if (isReading) {
+                        currentParagraphIndex++;
+                        setTimeout(speakNext, 500);
+                    }
+                };
+                
+                utterance.onstart = function() {
+                    isReading = true;
+                    btn.classList.add('active');
+                };
+                
+                window.speechSynthesis.speak(utterance);
+            }
+            
+            if (window.speechSynthesis.getVoices().length === 0) {
+                window.speechSynthesis.onvoiceschanged = function() {
+                    isReading = true;
+                    btn.classList.add('active');
+                    speakNext();
+                };
+            } else {
+                isReading = true;
+                btn.classList.add('active');
+                speakNext();
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg-primary: #f0f7fc;
+            --bg-card: #ffffff;
+            --color-primary: #84b8d8;
+            --color-primary-dark: #206090;
+            --color-accent: #f8d6e0;
+            --color-text: #2c333a;
+            --color-text-light: #6b7280;
+            --color-border: #e5e7eb;
+            --font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            --font-calligraphy: 'ZCOOL XiaoWei', 'STKaiti', 'KaiTi', serif;
+        }
+        
+        body { font-family: var(--font-family); background-color: var(--bg-primary); color: var(--color-text); line-height: 1.8; }
+        .smooth-scroll { scroll-behavior: smooth; }
+        .fade-in { animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(132, 184, 216, 0.15); }
+        .nav-active { color: var(--color-primary-dark); border-bottom: 2px solid var(--color-primary-dark); font-weight: 500; }
+        .chart-container { width: 100%; height: 400px; }
+        @media (max-width: 768px) { .chart-container { height: 300px; } }
+        .tooltip-custom { background: rgba(240, 247, 252, 0.98); border: 1px solid var(--color-primary); border-radius: 12px; }
+        .slider-thumb { appearance: none; width: 24px; height: 24px; background: var(--color-primary-dark); border-radius: 50%; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(32, 96, 144, 0.3); }
+        .slider-thumb::-webkit-slider-thumb { appearance: none; width: 24px; height: 24px; background: var(--color-primary-dark); border-radius: 50%; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(32, 96, 144, 0.3); }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+        .accordion-content.open { max-height: 500px; }
+        .modal-overlay { background: rgba(32, 96, 144, 0.2); backdrop-filter: blur(6px); }
+        .sakura-petal { position: absolute; pointer-events: none; opacity: 0.25; }
+        .watermark-text { position: absolute; font-size: 120px; font-weight: 100; color: rgba(44, 51, 58, 0.12); pointer-events: none; white-space: nowrap; }
+        .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        
+        .title-calligraphy {
+            font-family: var(--font-calligraphy);
+            background: linear-gradient(135deg, #206090 0%, #84b8d8 50%, #206090 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: normal;
+            letter-spacing: 2px;
+        }
+        
+        .section-title {
+            font-family: var(--font-calligraphy);
+            background: linear-gradient(135deg, #84b8d8 0%, #206090 50%, #84b8d8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: normal;
+            letter-spacing: 1px;
+            font-size: 1.8rem !important;
+        }
+        
+        .sub-title {
+            font-family: var(--font-calligraphy);
+            color: #84b8d8;
+            font-weight: normal;
+        }
+        
+        .text-indent {
+            text-indent: 2em;
+        }
+        
+        p.text-\[\#6b7280\].leading-relaxed {
+            font-size: 1.125rem !important;
+        }
+        
+        .accessibility-panel {
+            position: fixed;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 9999;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+        
+        .accessibility-panel:hover {
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .access-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            border: none;
+            background: #f0f7fc;
+            color: #206090;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+            transition: all 0.2s ease;
+            font-size: 18px;
+        }
+        
+        .access-btn:last-child {
+            margin-bottom: 0;
+        }
+        
+        .access-btn:hover {
+            background: #e6f2fa;
+            transform: scale(1.08);
+            color: #184c78;
+        }
+        
+        .access-btn.active {
+            background: #206090;
+            color: white;
+        }
+        
+        .font-size-lg {
+            font-size: 1.15em !important;
+        }
+        
+        .font-size-xl {
+            font-size: 1.3em !important;
+        }
+        
+        @media (max-width: 768px) {
+            .accessibility-panel {
+                right: 10px;
+                padding: 6px;
+            }
+            .access-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body class="smooth-scroll">
+
+<!-- 侧边辅助工具栏 -->
+<div class="accessibility-panel" id="accessPanel">
+    <button id="btnFont" title="字体大小" style="position:fixed;right:18px;top:calc(50% - 70px);width:44px;height:44px;border-radius:14px;border:none;background:#f0f7fc;color:#206090;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:9999;transition:all 0.2s ease;font-size:20px;font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,0.1);" onclick="toggleFontSize()">T</button>
+    <button id="btnEyeCare" title="护眼模式" style="position:fixed;right:18px;top:calc(50% - 10px);width:44px;height:44px;border-radius:14px;border:none;background:#f0f7fc;color:#206090;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:9999;transition:all 0.2s ease;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,0.1);" onclick="toggleEyeCare()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7"/>
+            <circle cx="12" cy="12" r="3"/>
+        </svg>
+    </button>
+    <button id="btnRead" title="朗读模式" style="position:fixed;right:18px;top:calc(50% + 50px);width:44px;height:44px;border-radius:14px;border:none;background:#f0f7fc;color:#206090;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:9999;transition:all 0.2s ease;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,0.1);" onclick="toggleRead()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+        </svg>
+    </button>
+</div>
+
+<!-- 顶部固定导航栏 -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-[#f0f7fc]/95 backdrop-blur-sm border-b border-[#e5e7eb]">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="text-lg font-light text-[#206090] hidden sm:block" style="font-family: 'ZCOOL XiaoWei', 'STKaiti', 'KaiTi', serif;">湖畔东风起</div>
+        <div class="flex items-center space-x-3 sm:space-x-8 overflow-x-auto scrollbar-hide">
+            <a href="#section-cover" class="nav-link text-base sm:text-lg py-2 px-2 whitespace-nowrap text-[#6b7280] hover:text-[#206090] transition-colors">封面</a>
+            <a href="#section-1" class="nav-link text-base sm:text-lg py-2 px-2 whitespace-nowrap text-[#6b7280] hover:text-[#206090] transition-colors">增长现状</a>
+            <a href="#section-2" class="nav-link text-base sm:text-lg py-2 px-2 whitespace-nowrap text-[#6b7280] hover:text-[#206090] transition-colors">家底殷实</a>
+            <a href="#section-3" class="nav-link text-base sm:text-lg py-2 px-2 whitespace-nowrap text-[#6b7280] hover:text-[#206090] transition-colors">内有乾坤</a>
+            <a href="#section-xihu" class="nav-link text-base sm:text-lg py-2 px-2 whitespace-nowrap text-[#6b7280] hover:text-[#206090] transition-colors">他山之石</a>
+            <a href="#section-6" class="nav-link text-base sm:text-lg py-2 px-2 whitespace-nowrap text-[#6b7280] hover:text-[#206090] transition-colors">结语</a>
+        </div>
+    </div>
+</nav>
+
+<!-- 封面头部区 -->
+<section id="section-cover" class="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#f0f7fc]">
+    <div class="watermark-text bottom-20 left-10">凌波门</div>
+    <div class="watermark-text bottom-40 right-10">跳东湖</div>
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+        <h1 class="title-calligraphy text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6 leading-tight">湖畔东风起——武汉东湖叩问"世界级"</h1>
+        <div class="flex justify-center space-x-4">
+            <a href="#section-1" class="px-8 py-3 bg-[#84b8d8] hover:bg-[#206090] text-white rounded-full transition-all duration-300 shadow-md">开始阅读</a>
+        </div>
+    </div>
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <svg class="w-6 h-6 text-[#206090]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+    </div>
+</section>
+
+<!-- 开篇前言与图表板块 -->
+<section id="section-1" class="py-20 px-4 relative overflow-hidden">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-10">
+            <h3 class="text-xl font-semibold text-[#184c78] mb-6 text-center">✨ 东湖四季 · 刮刮乐 ✨</h3>
+            <p class="text-[#6b7280] text-center mb-6">用鼠标擦开下方卡片，发现东湖四季美景</p>
+            <div class="grid grid-cols-2 gap-4 max-w-3xl mx-auto">
+                <div class="scratch-card-wrapper relative aspect-square rounded-xl overflow-hidden shadow-lg cursor-pointer" data-image="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Wuhan%20East%20Lake%20cherry%20blossom%20garden%20in%20spring%2C%20pink%20cherry%20blossoms%2C%20beautiful%20scenic%20spot%2C%20Chinese%20garden%20style&image_size=landscape_4_3" data-title="春·樱花园">
+                    <img src="https://bee-reg-ab.imagency.cn/p/b4f1e69bf76e8e87ff8e6ca584098e21.png" class="absolute inset-0 w-full h-full object-cover" alt="东湖樱花">
+                    <div class="scratch-mask absolute inset-0 w-full h-full bg-[#6b7280]"></div>
+                    <canvas class="scratch-canvas absolute inset-0 w-full h-full"></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span class="text-white text-lg font-medium opacity-80">👈 鼠标擦开</span>
+                        <span class="text-white text-2xl font-bold mt-2 opacity-90">春</span>
+                    </div>
+                </div>
+                <div class="scratch-card-wrapper relative aspect-square rounded-xl overflow-hidden shadow-lg cursor-pointer" data-image="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Wuhan%20East%20Lake%20lotus%20pond%20in%20summer%2C%20green%20lotus%20leaves%20and%20pink%20lotus%20flowers%2C%20scenic%20water%20view&image_size=landscape_4_3" data-title="夏·荷塘">
+                    <img src="https://bee-reg-ab.imagency.cn/p/d4cb515f32e83ddba663159945ae2d98.png" class="absolute inset-0 w-full h-full object-cover" alt="东湖荷塘">
+                    <div class="scratch-mask absolute inset-0 w-full h-full bg-[#6b7280]"></div>
+                    <canvas class="scratch-canvas absolute inset-0 w-full h-full"></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span class="text-white text-lg font-medium opacity-80">👈 鼠标擦开</span>
+                        <span class="text-white text-2xl font-bold mt-2 opacity-90">夏</span>
+                    </div>
+                </div>
+                <div class="scratch-card-wrapper relative aspect-square rounded-xl overflow-hidden shadow-lg cursor-pointer" data-image="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Wuhan%20East%20Lake%20autumn%20scenery%2C%20golden%20leaves%2C%20Luoyan%20scenic%20area%2C%20peaceful%20lake%20view&image_size=landscape_4_3" data-title="秋·落雁">
+                    <img src="https://bee-reg-ab.imagency.cn/p/66b6423e6ed87729eb6e23dd2fd53c04.jpg" class="absolute inset-0 w-full h-full object-cover" alt="东湖秋景">
+                    <div class="scratch-mask absolute inset-0 w-full h-full bg-[#6b7280]"></div>
+                    <canvas class="scratch-canvas absolute inset-0 w-full h-full"></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span class="text-white text-lg font-medium opacity-80">👈 鼠标擦开</span>
+                        <span class="text-white text-2xl font-bold mt-2 opacity-90">秋</span>
+                    </div>
+                </div>
+                <div class="scratch-card-wrapper relative aspect-square rounded-xl overflow-hidden shadow-lg cursor-pointer" data-image="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Wuhan%20East%20Lake%20plum%20blossom%20garden%20in%20winter%2C%20red%20plum%20blossoms%2C%20snow%2C%20traditional%20Chinese%20garden&image_size=landscape_4_3" data-title="冬·梅园">
+                    <img src="https://bee-reg-ab.imagency.cn/p/4f165000a094ed345195ec66188e05a2.jpg" class="absolute inset-0 w-full h-full object-cover" alt="东湖梅园">
+                    <div class="scratch-mask absolute inset-0 w-full h-full bg-[#6b7280]"></div>
+                    <canvas class="scratch-canvas absolute inset-0 w-full h-full"></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span class="text-white text-lg font-medium opacity-80">👈 鼠标擦开</span>
+                        <span class="text-white text-2xl font-bold mt-2 opacity-90">冬</span>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-6">
+                <button id="reset-scratch-btn" class="px-6 py-2 bg-[#e6f2fa] hover:bg-[#d4e8f5] text-[#184c78] rounded-full text-sm font-medium transition-colors">重新开始</button>
+            </div>
+        </div>
+        
+        <script>
+            (function() {
+                var scratchCards = document.querySelectorAll('.scratch-card-wrapper');
+                
+                scratchCards.forEach(function(card) {
+                    var canvas = card.querySelector('.scratch-canvas');
+                    var ctx = canvas.getContext('2d');
+                    var isDrawing = false;
+                    var rect;
+                    var lastPos = { x: 0, y: 0 };
+                    var isInitialized = false;
+                    
+                    function initCanvas() {
+                        if (isInitialized) return;
+                        isInitialized = true;
+                        
+                        rect = card.getBoundingClientRect();
+                        canvas.width = rect.width;
+                        canvas.height = rect.height;
+                        
+                        ctx.fillStyle = '#6b7280';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        
+                        ctx.globalCompositeOperation = 'destination-out';
+                        ctx.lineCap = 'round';
+                        ctx.lineJoin = 'round';
+                        ctx.lineWidth = 50;
+                    }
+                    
+                    function getPos(e) {
+                        var clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                        var clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                        return {
+                            x: clientX - rect.left,
+                            y: clientY - rect.top
+                        };
+                    }
+                    
+                    function draw(e) {
+                        if (!isDrawing || !isInitialized) return;
+                        e.preventDefault();
+                        
+                        var pos = getPos(e);
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(lastPos.x, lastPos.y);
+                        ctx.lineTo(pos.x, pos.y);
+                        ctx.stroke();
+                        
+                        lastPos = pos;
+                    }
+                    
+                    function startDraw(e) {
+                        initCanvas();
+                        isDrawing = true;
+                        var pos = getPos(e);
+                        lastPos = pos;
+                        
+                        ctx.beginPath();
+                        ctx.arc(pos.x, pos.y, 25, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        var mask = card.querySelector('.scratch-mask');
+                        if (mask) mask.style.display = 'none';
+                        
+                        var spans = card.querySelectorAll('span');
+                        spans.forEach(function(s) { s.style.display = 'none'; });
+                    }
+                    
+                    function stopDraw() {
+                        if (!isDrawing) return;
+                        isDrawing = false;
+                        checkReveal(card, canvas);
+                    }
+                    
+                    card.addEventListener('mousedown', startDraw);
+                    card.addEventListener('mousemove', draw);
+                    card.addEventListener('mouseup', stopDraw);
+                    card.addEventListener('mouseleave', stopDraw);
+                    
+                    card.addEventListener('touchstart', startDraw, { passive: false });
+                    card.addEventListener('touchmove', draw, { passive: false });
+                    card.addEventListener('touchend', stopDraw);
+                });
+                
+                function checkReveal(card, canvas) {
+                    var ctx = canvas.getContext('2d');
+                    var width = canvas.width;
+                    var height = canvas.height;
+                    var step = 10;
+                    var transparentPixels = 0;
+                    var totalPixels = 0;
+                    
+                    for (var y = 0; y < height; y += step) {
+                        for (var x = 0; x < width; x += step) {
+                            var pixel = ctx.getImageData(x, y, 1, 1).data[3];
+                            if (pixel < 128) transparentPixels++;
+                            totalPixels++;
+                        }
+                    }
+                    
+                    var percentage = (transparentPixels / totalPixels) * 100;
+                    
+                    if (percentage > 50) {
+                        card.querySelector('.scratch-canvas').style.opacity = '0';
+                        var spans = card.querySelectorAll('span');
+                        spans.forEach(function(s) { s.style.display = 'none'; });
+                    }
+                }
+                
+                document.getElementById('reset-scratch-btn').addEventListener('click', function() {
+                        var cards = document.querySelectorAll('.scratch-card-wrapper');
+                        cards.forEach(function(card) {
+                            var canvas = card.querySelector('.scratch-canvas');
+                            var ctx = canvas.getContext('2d');
+                            
+                            canvas.style.opacity = '1';
+                            var mask = card.querySelector('.scratch-mask');
+                            if (mask) mask.style.display = 'block';
+                            var spans = card.querySelectorAll('span');
+                            spans.forEach(function(s) { s.style.display = 'block'; });
+                            
+                            var rect = card.getBoundingClientRect();
+                            canvas.width = rect.width;
+                            canvas.height = rect.height;
+                            
+                            ctx.globalCompositeOperation = 'source-over';
+                            ctx.fillStyle = '#6b7280';
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                            
+                            ctx.globalCompositeOperation = 'destination-out';
+                            ctx.lineCap = 'round';
+                            ctx.lineJoin = 'round';
+                            ctx.lineWidth = 50;
+                            
+                            card.isInitialized = false;
+                        });
+                    });
+                
+                window.addEventListener('resize', function() {
+                    var cards = document.querySelectorAll('.scratch-card-wrapper');
+                    cards.forEach(function(card) {
+                        var canvas = card.querySelector('.scratch-canvas');
+                        var ctx = canvas.getContext('2d');
+                        
+                        var rect = card.getBoundingClientRect();
+                        canvas.width = rect.width;
+                        canvas.height = rect.height;
+                        
+                        ctx.globalCompositeOperation = 'source-over';
+                        ctx.fillStyle = '#6b7280';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        
+                        ctx.globalCompositeOperation = 'destination-out';
+                        ctx.lineCap = 'round';
+                        ctx.lineJoin = 'round';
+                        ctx.lineWidth = 50;
+                    });
+                });
+            })();
+        </script>
+        
+        <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">春天举着相机到樱花园赏樱，夏天迎着暮色顺着绿道骑行，秋天踩着树叶漫步落雁景区，冬天被寒气裹着也不忘在梅园寻香，武汉人的四季，好像总是离不开东湖。</p>
+        
+        <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">而我们的这位老友，也早已跻身国内文旅的第一梯队。从2021年的<span class="font-bold text-[#184c78]">2152.61</span>万人次的游客量，到2025年突破<span class="font-bold text-[#184c78]">2700</span>万，东湖的年游客量逐年增长；从<span class="font-bold text-[#184c78]">70</span>亿到<span class="font-bold text-[#184c78]">80</span>亿的年收入变化，东湖也仅仅只用了<span class="font-bold text-[#184c78]">2</span>年。2025年，东湖单赏花产业便引流<span class="font-bold text-[#184c78]">480</span>万人次，直接创收<span class="font-bold text-[#184c78]">1.37</span>亿元，樱花园更是登顶全国十大赏花目的地榜首。它2021年成为外交部全球推介武汉核心名片，2024年、2025年分别被央视报道<span class="font-bold text-[#184c78]">43</span>次、<span class="font-bold text-[#184c78]">50</span>次，"跳东湖""凌波门"等更是成为全国都响当当的文旅IP。</p>
+        
+        <!-- 双图表并排布局 -->
+        <div class="bg-white rounded-2xl p-6 mb-10 relative overflow-hidden">
+            <img src="https://bee-reg-ab.imagency.cn/p/c77ceff24f2dfd5169bda112469e83b8.png" alt="东湖轮廓" class="absolute opacity-8 pointer-events-none" style="object-fit: contain; object-position: center center; width: 220%; height: 220%; left: -4%; top: -40%;" onerror="this.style.display='none'">
+            <div class="relative z-10">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+                    <div class="text-center sm:text-left">
+                        <span class="text-sm text-[#6b7280]">游客量</span>
+                        <div class="text-xl font-light text-[#184c78]">万人次</div>
+                    </div>
+                    <div class="text-center sm:text-right mt-4 sm:mt-0">
+                        <span class="text-sm text-[#6b7280]">旅游收入</span>
+                        <div class="text-xl font-light text-[#74a8cb]">亿元</div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-6">
+                    <div class="flex-1">
+                        <div id="chart-visitors" style="width: 100%; height: 420px;"></div>
+                    </div>
+                    
+                    <div class="flex-1">
+                        <div id="chart-revenue" style="width: 100%; height: 420px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof echarts === 'undefined') {
+                var script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js';
+                script.onload = initCharts;
+                document.head.appendChild(script);
+            } else {
+                initCharts();
+            }
+        });
+        
+        var chartVisitors, chartRevenue;
+        
+        function initCharts() {
+            var years = ["2021","2022","2023","2024","2025"];
+            var visitors = [2152.61, 1412.86, 2445.52, 2550.48, 2712.59];
+            var revenue = [null, null, 71.18, 75.9, 80.1];
+            
+            chartVisitors = echarts.init(document.getElementById('chart-visitors'));
+            chartRevenue = echarts.init(document.getElementById('chart-revenue'));
+            
+            var baseOption = {
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(240, 247, 252, 0.98)',
+                    borderColor: '#84b8d8',
+                    borderWidth: 1,
+                    textStyle: { color: '#2c333a', fontSize: 13, lineHeight: 1.6 },
+                    borderRadius: 12
+                },
+                grid: { left: '12%', right: '12%', bottom: '15%', top: '10%', containLabel: true },
+                xAxis: {
+                    type: 'category',
+                    data: years,
+                    axisLabel: { color: '#9ca3af', fontSize: 12 },
+                    axisLine: { lineStyle: { color: '#e5e7eb' } },
+                    axisTick: { show: false }
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: { color: '#9ca3af', fontSize: 11 },
+                    axisLine: { show: false },
+                    axisTick: { show: false },
+                    splitLine: { lineStyle: { color: '#e5e7eb', type: 'dashed', width: 0.5 } },
+                    nameTextStyle: { color: '#9ca3af', fontSize: 11 }
+                }
+            };
+            
+            var visitorOption = Object.assign({}, baseOption, {
+                tooltip: Object.assign({}, baseOption.tooltip, {
+                    formatter: function(params) {
+                        if (!params) return '';
+                        var arr = Array.isArray(params) ? params : [params];
+                        var p = arr[0];
+                        if (!p || p.value === null || p.value === undefined) return '';
+                        var axisValue = p.axisValue || p.name || '';
+                        return '<div style="font-weight: 600; color: #184c78; margin-bottom: 6px;">' + axisValue + '年</div>' +
+                               '<div>游客量：<span style="font-weight: 600; color: #184c78;">' + p.value.toLocaleString() + '</span> 万人次</div>';
+                    }
+                }),
+                yAxis: Object.assign({}, baseOption.yAxis, {
+                    name: '游客量（万人次）',
+                    min: 0,
+                    max: 3000
+                }),
+                series: [{
+                    name: '游客量',
+                    type: 'line',
+                    data: visitors,
+                    lineStyle: { color: '#184c78', width: 3 },
+                    itemStyle: { color: '#184c78' },
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 10
+                }]
+            });
+            
+            var revenueOption = Object.assign({}, baseOption, {
+                tooltip: Object.assign({}, baseOption.tooltip, {
+                    trigger: 'item',
+                    formatter: function(params) {
+                        if (!params || params.value === null || params.value === undefined) {
+                            return '';
+                        }
+                        var val = params.value;
+                        var displayVal = val !== null && val !== undefined && !isNaN(val) ? val.toFixed(2) + ' 亿元' : '暂无统计数据';
+                        return '<div style="font-weight: 600; color: #74a8cb; margin-bottom: 6px;">' + params.name + '年</div>' +
+                               '<div>旅游收入：<span style="font-weight: 600; color: #74a8cb;">' + displayVal + '</span></div>';
+                    }
+                }),
+                xAxis: Object.assign({}, baseOption.xAxis, {
+                    axisLine: { lineStyle: { color: '#e5e7eb' } },
+                    splitLine: { show: false }
+                }),
+                yAxis: Object.assign({}, baseOption.yAxis, {
+                    name: '旅游收入（亿元）',
+                    min: 0,
+                    max: 100,
+                    position: 'right',
+                    splitLine: {
+                        show: true,
+                        lineStyle: { color: '#e5e7eb', type: 'dashed', width: 0.5 }
+                    }
+                }),
+                series: [{
+                    name: '旅游收入',
+                    type: 'line',
+                    data: revenue,
+                    lineStyle: { color: '#74a8cb', width: 3 },
+                    itemStyle: { color: '#74a8cb' },
+                    smooth: false,
+                    symbol: 'circle',
+                    symbolSize: 10,
+                    connectNulls: false
+                }]
+            });
+            
+            chartVisitors.setOption(visitorOption);
+            chartRevenue.setOption(revenueOption);
+            
+            chartVisitors.on('click', function(params) {
+                if (params.dataIndex === 4) {
+                    showModal('2025年赏花产业专项数据', '<div class="bg-[#f0f7fc] rounded-xl p-6 text-center"><p class="text-[#2c333a] leading-relaxed">2025东湖赏花产业专项数据：全年引流480万人次，直接创收1.37亿元，本年旅游收入80.1亿元，超额完成"十四五"文旅收入目标</p></div>');
+                }
+            });
+            
+            chartRevenue.on('click', function(params) {
+                if (params.dataIndex === 4) {
+                    showModal('2025年赏花产业专项数据', '<div class="bg-[#f0f7fc] rounded-xl p-6 text-center"><p class="text-[#2c333a] leading-relaxed">2025东湖赏花产业专项数据：全年引流480万人次，直接创收1.37亿元，本年旅游收入80.1亿元，超额完成"十四五"文旅收入目标</p></div>');
+                }
+            });
+            
+            window.addEventListener('resize', function() {
+                chartVisitors && chartVisitors.resize();
+                chartRevenue && chartRevenue.resize();
+            });
+        }
+        </script>
+
+        <!-- 赏花产业核心数据 -->
+        <div class="text-center mb-12 relative">
+            <svg class="sakura-petal top-0 left-1/4 w-8 h-8" viewBox="0 0 24 24">
+                <path fill="#f8d6e0" d="M12 2C10 2 8 4 8 6c0 1.5.8 2.8 2 3.5V14H6c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2h-4V9.5c1.2-.7 2-2 2-3.5 0-2-2-4-4-4z"/>
+            </svg>
+            <svg class="sakura-petal bottom-0 right-1/4 w-6 h-6" viewBox="0 0 24 24">
+                <path fill="#f8d6e0" d="M12 2C10 2 8 4 8 6c0 1.5.8 2.8 2 3.5V14H6c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2h-4V9.5c1.2-.7 2-2 2-3.5 0-2-2-4-4-4z"/>
+            </svg>
+            <p class="text-2xl sm:text-3xl font-light text-[#206090]">2025年，东湖单赏花产业便引流480万人次，直接创收1.37亿元</p>
+        </div>
+
+        <!-- 央视报道左右两栏 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-12">
+            <div class="bg-white rounded-xl p-8 text-center">
+                <div class="flex items-center justify-center space-x-3 mb-4">
+                    <svg class="w-8 h-8 text-[#6b7280]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="3" y1="9" x2="21" y2="9"/>
+                        <line x1="3" y1="15" x2="21" y2="15"/>
+                        <line x1="8" y1="3" x2="8" y2="9"/>
+                        <line x1="16" y1="3" x2="16" y2="9"/>
+                    </svg>
+                    <span class="text-lg text-[#2c333a]">2024年央视报道</span>
+                </div>
+                <div class="text-5xl font-light text-[#206090]">43</div>
+                <div class="text-sm text-[#6b7280] mt-2">次</div>
+            </div>
+            <div class="bg-white rounded-xl p-8 text-center">
+                <div class="flex items-center justify-center space-x-3 mb-4">
+                    <svg class="w-8 h-8 text-[#6b7280]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="3" y1="9" x2="21" y2="9"/>
+                        <line x1="3" y1="15" x2="21" y2="15"/>
+                        <line x1="8" y1="3" x2="8" y2="9"/>
+                        <line x1="16" y1="3" x2="16" y2="9"/>
+                    </svg>
+                    <span class="text-lg text-[#2c333a]">2025年央视报道</span>
+                </div>
+                <div class="text-5xl font-light text-[#206090]">50</div>
+                <div class="text-sm text-[#6b7280] mt-2">次</div>
+            </div>
+        </div>
+
+        <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">如此家底，东湖成为"世界名湖"，打造世界级滨湖文旅区似乎是水到渠成的事。然而，真的如此吗？</p>
+
+
+</section>
+
+<!-- 第二章：家底殷实：生态与文脉双重禀赋 -->
+<section id="section-2" class="py-20 px-4 bg-[#f0f7fc]">
+    <div class="max-w-6xl mx-auto">
+        <div class="bg-white rounded-2xl p-6 mb-10">
+            <h2 class="section-title text-3xl sm:text-4xl mb-6">家底殷实：生态与文脉双重禀赋</h2>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+                东湖的底气从来不是靠喊出来的，而是靠数万亩的生态体量、独一份的花卉资源、沉淀千年的文脉和多年打磨出的成熟业态一点点"堆"出来的。
+            </p>
+             <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">
+                东湖辖区总面积为<span class="font-bold text-[#184c78]">81.68km²</span>，其中风景名胜区<span class="font-bold text-[#184c78]">61.86km²</span>，占比超<span class="font-bold text-[#184c78]">75%</span>。它是全国最大的城中湖，<span class="font-bold text-[#184c78]">34.15km²</span>的水域串起<span class="font-bold text-[#184c78]">10</span>个子湖泊，环湖散落着<span class="font-bold text-[#184c78]">34</span>座山峰、近<span class="font-bold text-[#184c78]">300</span>亩湿地、超<span class="font-bold text-[#184c78]">1000</span>公顷的森林植被，以及大面积原生湿地、水下森林生态修复系统，蕴藏着国家一二级保护植物<span class="font-bold text-[#184c78]">16</span>种、珍稀鸟类<span class="font-bold text-[#184c78]">200</span>余种。
+            </p>
+            
+            <div id="ecology-data-card" class="bg-white rounded-2xl p-6 mb-10 border border-[#e5e7eb] relative overflow-hidden">
+                <h3 class="text-lg font-bold text-[#184c78] mb-2 flex items-center relative z-10">
+                    <svg class="w-5 h-5 mr-2 text-[#74a8cb]" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="8" fill="none" stroke="#74a8cb" stroke-width="1.5"/>
+                    </svg>
+                    东湖空间生态基底
+                </h3>
+                <p class="text-xs text-[#74a8cb] mb-4 relative z-10">点击图标查看详情</p>
+                <div class="relative w-full" style="height: 550px;">
+                    <img src="https://bee-reg-ab.imagency.cn/p/c77ceff24f2dfd5169bda112469e83b8.png" style="width:90%;height:130%;object-fit:cover;object-position:50% 45%;" class="absolute inset-0"/>
+                    <svg viewBox="0 0 720 550" class="w-full h-full absolute inset-0 pointer-events-none">
+                        <g data-tip="珍稀鸟类200余种、国家一二级保护植物16种，丰富的生物多样性" class="cursor-pointer group" transform="translate(360, 70)" style="pointer-events:auto;">
+                            <image href="https://bee-reg-ab.imagency.cn/p/7c856ffc1c979eef309b5f9473fe07af.png" x="-90" y="-90" width="180" height="180" class="group-hover:scale-110 transition-transform"/>
+                            <text x="0" y="95" text-anchor="middle" fill="#ffffff" font-size="18" class="group-hover:fill-[#74a8cb] font-bold text-shadow">生物</text>
+                        </g>
+                        <g data-tip="34座环湖山峰，形成山水相依的独特景观格局" class="cursor-pointer group" transform="translate(160, 250)" style="pointer-events:auto;">
+                            <image href="https://bee-reg-ab.imagency.cn/p/ed552997ac1c856239d9f25e1e9dd48b.png" x="-95" y="-60" width="190" height="120" class="group-hover:scale-110 transition-transform"/>
+                            <text x="0" y="80" text-anchor="middle" fill="#ffffff" font-size="18" class="group-hover:fill-[#74a8cb] font-bold text-shadow">山峰</text>
+                        </g>
+                        <g data-tip="34.15km²水域，串起10个子湖泊" class="cursor-pointer group" transform="translate(200, 420)" style="pointer-events:auto;">
+                            <image href="https://bee-reg-ab.imagency.cn/p/65d68819931c252f17107ec7e752fcb0.png" x="-50" y="-50" width="100" height="100" class="group-hover:scale-110 transition-transform"/>
+                            <text x="0" y="70" text-anchor="middle" fill="#ffffff" font-size="16" class="group-hover:fill-[#74a8cb] font-bold text-shadow">湖泊</text>
+                        </g>
+                        <g data-tip="超1000公顷森林植被，形成城市绿肺，调节气候" class="cursor-pointer group" transform="translate(500, 200)" style="pointer-events:auto;">
+                            <image href="https://bee-reg-ab.imagency.cn/p/a418218303b8c9a3b3259c3fea540022.png" x="-75" y="-75" width="150" height="150" class="group-hover:scale-110 transition-transform"/>
+                            <text x="0" y="95" text-anchor="middle" fill="#ffffff" font-size="18" class="group-hover:fill-[#74a8cb] font-bold text-shadow">森林植被</text>
+                        </g>
+                        <g data-tip="近300亩湿地，包含水下森林生态修复系统" class="cursor-pointer group" transform="translate(560, 400)" style="pointer-events:auto;">
+                            <image href="https://bee-reg-ab.imagency.cn/p/3fd777a3f3159fec80f35302d1ee709a.png" x="-60" y="-60" width="120" height="120" class="group-hover:scale-110 transition-transform"/>
+                            <text x="0" y="80" text-anchor="middle" fill="#ffffff" font-size="16" class="group-hover:fill-[#74a8cb] font-bold text-shadow">湿地</text>
+                        </g>
+                    </svg>
+                    <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg z-10">
+                        <div class="text-center pb-3 border-b-2 border-[#74a8cb] mb-3">
+                            <div class="text-[#6b7280] text-sm">辖区总面积</div>
+                            <div class="text-[#184c78] text-xl font-bold">81.68km²</div>
+                        </div>
+                        <div class="text-center pb-3 border-b-2 border-[#74a8cb] mb-3">
+                            <div class="text-[#6b7280] text-sm">风景名胜区</div>
+                            <div class="text-[#184c78] text-xl font-bold">61.86km²</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-[#6b7280] text-sm">水域面积</div>
+                            <div class="text-[#184c78] text-xl font-bold">34.15km²</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="ecology-card-tooltip" class="fixed hidden bg-white border border-[#74a8cb] rounded-xl p-3 text-sm z-50 shadow-lg max-w-xs">
+                    <div class="font-bold text-[#184c78]"></div>
+                </div>
+                <script>
+                    (function() {
+                        var card = document.getElementById('ecology-data-card');
+                        var tooltip = document.getElementById('ecology-card-tooltip');
+                        var elements = card.querySelectorAll('[data-tip]');
+                        elements.forEach(function(el) {
+                            el.addEventListener('mouseenter', function(e) {
+                                tooltip.classList.remove('hidden');
+                                tooltip.querySelector('.font-bold').textContent = el.getAttribute('data-tip');
+                                tooltip.style.left = (e.clientX + 8) + 'px';
+                                tooltip.style.top = (e.clientY - tooltip.offsetHeight / 2) + 'px';
+                            });
+                            el.addEventListener('mouseleave', function() {
+                                tooltip.classList.add('hidden');
+                            });
+                        });
+                    })();
+                </script>
+            </div>
+            
+            
+
+            
+            <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+                更为难得的是它的"大而不粗"。2022年<span class="font-bold text-[#184c78]">9</span>月，东湖通过省级健康河湖试点验收，2023年获评首批湖北省"幸福河湖"，获授省级示范型国家湿地公园称号，<span class="font-bold text-[#184c78]">105</span>公里的环湖绿道入选联合国人居署城市空间改善示范项目。东湖的生态治理水平，已经拿到世界名湖的"入场券"。
+            </p>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">
+                在东湖做了八年导游的魏云最懂这种变化：以前湖边人车混行，交通混乱，现在步行道、骑行道、机动车道彻底分开，<span class="font-bold text-[#184c78]">7</span>段主题景观串起整圈湖岸，<span class="font-bold text-[#184c78]">30</span>万人同时入园也不觉得挤。岸边还修了生态缓坡，芦苇和水生植物层层过滤雨水，以前夏天常出现的蓝藻，现在已经很少见。
+            </p>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">
+                生态之外，东湖最硬核的就是丰富的花卉资源。很多人只知道东湖的花好看，却不知道这里拥有两大国家级花卉研究中心——中国梅花研究中心和中国荷花研究中心，拥有<span class="font-bold text-[#184c78]">320</span>余种梅花，居全球品种之首；<span class="font-bold text-[#184c78]">700</span>余种荷花，是全球最大的荷花资源圃。此外，东湖樱花园还与日本弘前、美国华盛顿齐名，位列世界三大赏樱胜地，万余株樱花、<span class="font-bold text-[#184c78]">50</span>余个品种，每年春天都在制造着全国顶级的"粉色风暴"。再加上桂花、牡丹、杜鹃等<span class="font-bold text-[#184c78]">13</span>个植物类专园，园区花卉总面积超<span class="font-bold text-[#184c78]">2000</span>亩，全年赏花期<span class="font-bold text-[#184c78]">10</span>个月，形成"春樱、夏荷、秋桂、冬梅"花卉资源，几乎抹平了文旅行业最头疼的淡旺季落差。春樱烂漫、夏荷清雅、秋桂沁香、冬梅傲雪，每一种花都在中华文化里沉淀了独有的精神品格与审美意趣，这是最容易跨文化传播的东方美学。
+            </p>
+            
+            <div id="flower-system-card" class="bg-white rounded-2xl p-6 mb-10 border border-[#e5e7eb] relative overflow-hidden">
+                <svg class="absolute inset-0 w-full h-full opacity-[0.03] pointer-events-none" viewBox="0 0 400 300">
+                    <path d="M50,250 Q70,200 110,190 T190,180 T270,190 T330,230 Q350,270 310,280 T190,290 Q70,270 50,250 Z" fill="#74a8cb"/>
+                    <path d="M70,230 Q90,180 130,175 T210,170 T290,175 T350,210" stroke="#74a8cb" stroke-width="0.5" fill="none"/>
+                </svg>
+                <svg class="absolute bottom-0 left-0 right-0 h-32 opacity-[0.04] pointer-events-none" viewBox="0 0 400 120">
+                    <path d="M0,120 Q50,80 100,100 Q150,120 200,90 Q250,60 300,90 Q350,120 400,80 L400,120 L0,120 Z" fill="none" stroke="#6b7280" stroke-width="0.5"/>
+                    <circle cx="50" cy="100" r="15" fill="none" stroke="#6b7280" stroke-width="0.3"/>
+                    <circle cx="150" cy="90" r="10" fill="none" stroke="#6b7280" stroke-width="0.3"/>
+                    <circle cx="250" cy="80" r="12" fill="none" stroke="#6b7280" stroke-width="0.3"/>
+                    <circle cx="350" cy="95" r="8" fill="none" stroke="#6b7280" stroke-width="0.3"/>
+                    <path d="M20,110 L30,95 L40,110" stroke="#6b7280" stroke-width="0.3"/>
+                    <path d="M360,110 L370,95 L380,110" stroke="#6b7280" stroke-width="0.3"/>
+                </svg>
+                <h3 class="text-lg font-bold text-[#184c78] mb-4 relative z-10 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-[#f8d6e0]" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="6" fill="none" stroke="#f8d6e0" stroke-width="1.5"/>
+                        <path d="M10,6 Q8,9 10,12 Q12,9 10,6" fill="none" stroke="#f8d6e0" stroke-width="1.5"/>
+                    </svg>
+                    花卉资源
+                </h3>
+                <p class="text-xs text-[#74a8cb] mb-6 relative z-10">点击图标展开详情</p>
+                
+                <div class="relative mb-6">
+                    <div class="flex justify-center space-x-8">
+                        <div class="flower-icon-container cursor-pointer group" data-flower="plum">
+                            <div class="w-32 h-32 rounded-2xl bg-gradient-to-br from-[#fce4ec] to-[#f8d6e0] flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
+                                <img src="https://bee-reg-ab.imagency.cn/p/56018107131aa4f83f89cd093b62033b.png" alt="梅花" class="w-20 h-20 object-contain" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"/>
+                            </div>
+                            <div class="text-center mt-3">
+                                <span class="text-[#184c78] font-bold text-sm">梅花</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flower-icon-container cursor-pointer group" data-flower="lotus">
+                            <div class="w-32 h-32 rounded-2xl bg-gradient-to-br from-[#e8f5eb] to-[#d4eed8] flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
+                                <img src="https://bee-reg-ab.imagency.cn/p/43a83fd4d2eb39fd77f9daa4b6f2eea4.png" alt="荷花" class="w-20 h-20 object-contain" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"/>
+                            </div>
+                            <div class="text-center mt-3">
+                                <span class="text-[#184c78] font-bold text-sm">荷花</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flower-icon-container cursor-pointer group" data-flower="sakura">
+                            <div class="w-32 h-32 rounded-2xl bg-gradient-to-br from-[#e6f2fa] to-[#d4e8f5] flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-300">
+                                <img src="https://bee-reg-ab.imagency.cn/p/e99b91d6b88c55c4dd133656b3c29597.png" alt="樱花" class="w-20 h-20 object-contain" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"/>
+                            </div>
+                            <div class="text-center mt-3">
+                                <span class="text-[#184c78] font-bold text-sm">樱花</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="flower-detail-panel" class="mt-6 overflow-hidden transition-all duration-500 ease-out" style="max-height: 0;">
+                        <div class="relative rounded-xl p-6 shadow-lg border border-[#e5e7eb] bg-gradient-to-br from-[#f0f7fc] to-[#e6f2fa]">
+                            <div class="absolute inset-0 rounded-xl overflow-hidden pointer-events-none" style="z-index: 0;">
+                                <div class="absolute top-0 right-0 w-32 h-32 bg-[#74a8cb]/5 rounded-full blur-2xl"></div>
+                                <div class="absolute bottom-0 left-0 w-24 h-24 bg-[#d475a0]/5 rounded-full blur-xl"></div>
+                            </div>
+                            <div id="flower-detail-content" style="position: relative; z-index: 1;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="text-[#6b7280] text-center leading-relaxed mb-6 relative z-10">
+                    此外还有<span class="text-[#74a8cb]">桂花</span>、<span class="text-[#74a8cb]">牡丹</span>、<span class="text-[#74a8cb]">杜鹃</span>等13个植物类专园，园区花卉总面积超2000亩，全年赏花期10个月。
+                </p>
+                
+                <script>
+                    (function() {
+                        var flowerData = {
+                            plum: {
+                                title: '中国梅花研究中心',
+                                subtitle: '320余种梅花，全球品种第一',
+                                details: '<div class="grid grid-cols-2 gap-3 mt-4"><div class="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-[#f8d6e0]/50"><span class="text-[#6b7280] text-xs">品种数量</span><div class="font-bold text-[#d475a0] mt-1">320余种</div></div><div class="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-[#f8d6e0]/50"><span class="text-[#6b7280] text-xs">种植规模</span><div class="font-bold text-[#d475a0] mt-1">2万余株梅树</div></div><div class="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-[#f8d6e0]/50"><span class="text-[#6b7280] text-xs">赏花季</span><div class="font-bold text-[#d475a0] mt-1">1-3月</div></div><div class="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-[#f8d6e0]/50"><span class="text-[#6b7280] text-xs">全球地位</span><div class="font-bold text-[#d475a0] mt-1">品种数量全球第一</div></div></div><p class="mt-4 text-[#6b7280] text-sm leading-relaxed">国内核心梅花种质资源库，拥有国内外梅花品种320余种，是中国四大梅园之一。</p>'
+                            },
+                            lotus: {
+                                title: '中国荷花研究中心',
+                                subtitle: '700余种荷花，全球最大荷花资源圃',
+                                details: '<div class="grid grid-cols-2 gap-3 mt-4"><div class="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-[#d4eed8]/50"><span class="text-[#6b7280] text-xs">品种数量</span><div class="font-bold text-[#5a9b6e] mt-1">700余种</div></div><div class="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-[#d4eed8]/50"><span class="text-[#6b7280] text-xs">种植规模</span><div class="font-bold text-[#5a9b6e] mt-1">全域荷塘13万平方米水域</div></div><div class="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-[#d4eed8]/50"><span class="text-[#6b7280] text-xs">赏花季</span><div class="font-bold text-[#5a9b6e] mt-1">6-8月</div></div><div class="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-[#d4eed8]/50"><span class="text-[#6b7280] text-xs">全球地位</span><div class="font-bold text-[#5a9b6e] mt-1">全球最大荷花资源圃</div></div></div><p class="mt-4 text-[#6b7280] text-sm leading-relaxed">世界规模最大的荷花品种资源圃，建有荷花品种基因库，承担国家级荷花育种研究。</p>'
+                            },
+                            sakura: {
+                                title: '东湖樱花园',
+                                subtitle: '万余株樱花、50余个品种，世界三大赏樱胜地',
+                                details: '<div class="grid grid-cols-2 gap-3 mt-4"><div class="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-[#d4e8f5]/50"><span class="text-[#6b7280] text-xs">品种数量</span><div class="font-bold text-[#74a8cb] mt-1">50余个</div></div><div class="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-[#d4e8f5]/50"><span class="text-[#6b7280] text-xs">种植规模</span><div class="font-bold text-[#74a8cb] mt-1">1万余株樱花</div></div><div class="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-[#d4e8f5]/50"><span class="text-[#6b7280] text-xs">赏花季</span><div class="font-bold text-[#74a8cb] mt-1">3-4月</div></div><div class="bg-white/70 backdrop-blur-sm rounded-lg p-3 border border-[#d4e8f5]/50"><span class="text-[#6b7280] text-xs">全球地位</span><div class="font-bold text-[#74a8cb] mt-1">世界三大赏樱胜地</div></div></div><p class="mt-4 text-[#6b7280] text-sm leading-relaxed">与日本弘前、美国华盛顿并称世界三大赏樱胜地，是华中地区规模最大的樱花观赏园。</p>'
+                            }
+                        };
+                        
+                        var containers = document.querySelectorAll('.flower-icon-container');
+                        var panel = document.getElementById('flower-detail-panel');
+                        var content = document.getElementById('flower-detail-content');
+                        var activeFlower = null;
+                        
+                        containers.forEach(function(container) {
+                            container.addEventListener('click', function() {
+                                var flower = this.getAttribute('data-flower');
+                                
+                                if (activeFlower === flower) {
+                                    panel.style.maxHeight = '0';
+                                    activeFlower = null;
+                                    containers.forEach(function(c) {
+                                        c.classList.remove('ring-2', 'ring-[#74a8cb]');
+                                    });
+                                } else {
+                                    var data = flowerData[flower];
+                                    content.innerHTML = '<h4 class="font-bold text-[#184c78] text-lg mb-2">' + data.title + '</h4><p class="text-[#6b7280] text-sm mb-4">' + data.subtitle + '</p>' + data.details;
+                                    
+                                    panel.style.maxHeight = '350px';
+                                    activeFlower = flower;
+                                    
+                                    containers.forEach(function(c) {
+                                        c.classList.remove('ring-2', 'ring-[#74a8cb]');
+                                    });
+                                    this.classList.add('ring-2', 'ring-[#74a8cb]');
+                                }
+                            });
+                        });
+                    })();
+                </script>
+                <div class="relative mt-6">
+                    <svg class="absolute inset-0 w-full h-full opacity-[0.03] pointer-events-none" viewBox="0 0 400 200">
+                        <path d="M50,180 Q70,130 110,120 T190,110 T270,120 T330,160 Q350,200 310,210 T190,220 Q70,200 50,180 Z" fill="#74a8cb"/>
+                        <path d="M70,160 Q90,110 130,105 T210,100 T290,105 T350,140" stroke="#74a8cb" stroke-width="0.5" fill="none"/>
+                    </svg>
+                    <div class="relative overflow-hidden rounded-xl" id="flower-carousel">
+                        <div class="flex transition-transform duration-300 ease-out" id="carousel-track">
+                            <div class="flex-shrink-0 w-full px-1 cursor-pointer group" data-tip="春樱：万株东湖樱花，世界三大赏樱胜地春日景观">
+                                <div class="relative rounded-lg overflow-hidden aspect-video">
+                                    <img src="	https://swj.wuhan.gov.cn/tzdt/jcss/202601/W020260106336706541405.jpg" alt="春樱" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                                    <div class="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-white/80 backdrop-blur-sm px-4 py-1 rounded-full text-[#6b7280] text-sm font-medium">春樱</div>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 w-full px-1 cursor-pointer group" data-tip="夏荷：全球最大荷花资源圃，连片湖荷水上风光">
+                                <div class="relative rounded-lg overflow-hidden aspect-video">
+                                    <img src="https://swj.wuhan.gov.cn/tzdt/jcss/202601/W020260106336707068782.jpg" alt="夏荷" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                                    <div class="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-white/80 backdrop-blur-sm px-4 py-1 rounded-full text-[#6b7280] text-sm font-medium">夏荷</div>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 w-full px-1 cursor-pointer group" data-tip="秋桂：环湖成片金桂，全域金秋馥郁花海">
+                                <div class="relative rounded-lg overflow-hidden aspect-video">
+                                    <img src="https://swj.wuhan.gov.cn/tzdt/jcss/202601/W020260106336707404360.jpg" alt="秋桂" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                                    <div class="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-white/80 backdrop-blur-sm px-4 py-1 rounded-full text-[#6b7280] text-sm font-medium">秋桂</div>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 w-full px-1 cursor-pointer group" data-tip="冬梅：320余种梅花，冬日湖畔傲雪景观">
+                                <div class="relative rounded-lg overflow-hidden aspect-video">
+                                    <img src="https://swj.wuhan.gov.cn/tzdt/jcss/202601/W020260106336708409332.jpg" alt="冬梅" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                                    <div class="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-white/80 backdrop-blur-sm px-4 py-1 rounded-full text-[#6b7280] text-sm font-medium">冬梅</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="carousel-prev" class="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/60 hover:bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-[#6b7280] hover:text-[#74a8cb] transition-all shadow-sm z-10">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M15 18l-6-6 6-6"/>
+                            </svg>
+                        </button>
+                        <button id="carousel-next" class="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-white/60 hover:bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-[#6b7280] hover:text-[#74a8cb] transition-all shadow-sm z-10">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 18l6-6-6-6"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex justify-center mt-3 space-x-2">
+                        <button class="w-2 h-2 rounded-full bg-[#74a8cb] transition-colors carousel-dot" data-index="0"></button>
+                        <button class="w-2 h-2 rounded-full bg-[#e5e7eb] hover:bg-[#c4cdd7] transition-colors carousel-dot" data-index="1"></button>
+                        <button class="w-2 h-2 rounded-full bg-[#e5e7eb] hover:bg-[#c4cdd7] transition-colors carousel-dot" data-index="2"></button>
+                        <button class="w-2 h-2 rounded-full bg-[#e5e7eb] hover:bg-[#c4cdd7] transition-colors carousel-dot" data-index="3"></button>
+                    </div>
+                </div>
+                <script>
+                    (function() {
+                        var carousel = document.getElementById('flower-carousel');
+                        var track = document.getElementById('carousel-track');
+                        var prevBtn = document.getElementById('carousel-prev');
+                        var nextBtn = document.getElementById('carousel-next');
+                        var dots = document.querySelectorAll('.carousel-dot');
+                        var currentIndex = 0;
+                        var totalSlides = 4;
+                        var startX = 0;
+                        var isDragging = false;
+                        
+                        function updateCarousel() {
+                            track.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+                            dots.forEach(function(dot, index) {
+                                if (index === currentIndex) {
+                                    dot.classList.remove('bg-[#e5e7eb]', 'hover:bg-[#c4cdd7]');
+                                    dot.classList.add('bg-[#74a8cb]');
+                                } else {
+                                    dot.classList.remove('bg-[#74a8cb]');
+                                    dot.classList.add('bg-[#e5e7eb]', 'hover:bg-[#c4cdd7]');
+                                }
+                            });
+                        }
+                        
+                        prevBtn.addEventListener('click', function() {
+                            currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+                            updateCarousel();
+                        });
+                        
+                        nextBtn.addEventListener('click', function() {
+                            currentIndex = (currentIndex + 1) % totalSlides;
+                            updateCarousel();
+                        });
+                        
+                        dots.forEach(function(dot) {
+                            dot.addEventListener('click', function() {
+                                currentIndex = parseInt(this.getAttribute('data-index'));
+                                updateCarousel();
+                            });
+                        });
+                        
+                        carousel.addEventListener('mousedown', function(e) {
+                            startX = e.clientX;
+                            isDragging = true;
+                        });
+                        
+                        document.addEventListener('mousemove', function(e) {
+                            if (!isDragging) return;
+                            var diff = startX - e.clientX;
+                            if (Math.abs(diff) > 50) {
+                                if (diff > 0) {
+                                    currentIndex = (currentIndex + 1) % totalSlides;
+                                } else {
+                                    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+                                }
+                                updateCarousel();
+                                isDragging = false;
+                            }
+                        });
+                        
+                        document.addEventListener('mouseup', function() {
+                            isDragging = false;
+                        });
+                        
+                        carousel.addEventListener('touchstart', function(e) {
+                            startX = e.touches[0].clientX;
+                            isDragging = true;
+                        });
+                        
+                        document.addEventListener('touchmove', function(e) {
+                            if (!isDragging) return;
+                            var diff = startX - e.touches[0].clientX;
+                            if (Math.abs(diff) > 50) {
+                                if (diff > 0) {
+                                    currentIndex = (currentIndex + 1) % totalSlides;
+                                } else {
+                                    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+                                }
+                                updateCarousel();
+                                isDragging = false;
+                            }
+                        });
+                        
+                        document.addEventListener('touchend', function() {
+                            isDragging = false;
+                        });
+                    })();
+                </script>
+                <div id="flower-card-tooltip" class="fixed hidden bg-white border border-[#74a8cb] rounded-xl p-3 text-sm z-50 shadow-lg max-w-xs">
+                    <div class="font-bold text-[#184c78]"></div>
+                </div>
+                <script>
+                    (function() {
+                        var card = document.getElementById('flower-system-card');
+                        var tooltip = document.getElementById('flower-card-tooltip');
+                        var elements = card.querySelectorAll('[data-tip]');
+                        elements.forEach(function(el) {
+                            el.addEventListener('mouseenter', function(e) {
+                                tooltip.classList.remove('hidden');
+                                tooltip.querySelector('.font-bold').textContent = el.getAttribute('data-tip');
+                                tooltip.style.left = (e.clientX + 8) + 'px';
+                                tooltip.style.top = (e.clientY - tooltip.offsetHeight / 2) + 'px';
+                            });
+                            el.addEventListener('mouseleave', function() {
+                                tooltip.classList.add('hidden');
+                            });
+                        });
+                    })();
+                </script>
+            </div>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">
+                而最容易被忽视的是东湖深厚的人文家底。植根于荆楚文化，沿湖分布着<span class="font-bold text-[#184c78]">19</span>处历史文化景点，构成了完整的荆楚文化滨湖叙事。近现代文脉更有分量：1930年周苍柏创办海光农圃，毛主席曾<span class="font-bold text-[#184c78]">48</span>次下榻东湖，2018年中印"东湖会晤"让这里成了国际外交舞台上的武汉符号。然而，这些明珠尚未被完全串联、点亮。如何让沉睡的历史"开口说话"，如何将周边高校、湖北省博物馆、中国科学院水生所等科教文博资源转化为可体验的文旅产品，是东湖从"观光湖"升级为"文化湖"的关键一跃。
+            </p>
+            
+            <div class="bg-white rounded-2xl p-6 mb-10 border border-[#e5e7eb]">
+                <div id="chart-cultural-stack" class="chart-container"></div>
+                <p class="text-center text-[#6b7280] text-sm mt-4">东湖历史文化景点分布</p>
+            </div>
+            <script>
+                setTimeout(function() {
+                    var culturalChart = echarts.init(document.getElementById('chart-cultural-stack'));
+                    var culturalDetailData = {
+                        '听涛景区': {
+                            total: 6,
+                            levelCount: 3,
+                            normalCount: 3,
+                            sites: {
+                                level1: ['梅岭一号'],
+                                level2: ['行吟阁', '屈原纪念馆'],
+                                level3: [],
+                                level4: []
+                            }
+                        },
+                        '磨山景区': {
+                            total: 6,
+                            levelCount: 6,
+                            normalCount: 0,
+                            sites: {
+                                level1: ['楚天台'],
+                                level2: ['楚城', '朱碑亭', '刘备郊天坛'],
+                                level3: ['离骚碑', '楚才园'],
+                                level4: []
+                            }
+                        },
+                        '落雁景区': {
+                            total: 4,
+                            levelCount: 3,
+                            normalCount: 1,
+                            sites: {
+                                level1: [],
+                                level2: ['芦洲古渡'],
+                                level3: ['清河桥', '赵氏花园'],
+                                level4: []
+                            }
+                        },
+                        '白马景区': {
+                            total: 1,
+                            levelCount: 1,
+                            normalCount: 0,
+                            sites: {
+                                level1: [],
+                                level2: [],
+                                level3: [],
+                                level4: ['白马洲']
+                            }
+                        },
+                        '周边地区': {
+                            total: 2,
+                            levelCount: 2,
+                            normalCount: 0,
+                            sites: {
+                                level1: [],
+                                level2: [],
+                                level3: [],
+                                level4: ['蛮王冢', '放鹰台']
+                            }
+                        }
+                    };
+                    var sourceData = [
+                        { area: '听涛景区', level1: 1, level2: 2, level3: 0, level4: 0 },
+                        { area: '磨山景区', level1: 1, level2: 3, level3: 2, level4: 0 },
+                        { area: '落雁景区', level1: 0, level2: 1, level3: 2, level4: 0 },
+                        { area: '白马景区', level1: 0, level2: 0, level3: 0, level4: 1 },
+                        { area: '周边地区', level1: 0, level2: 0, level3: 0, level4: 2 }
+                    ];
+                    var option = {
+                        tooltip: {
+                            trigger: 'axis',
+                            backgroundColor: 'rgba(240, 247, 252, 0.98)',
+                            borderColor: '#84b8d8',
+                            borderWidth: 1,
+                            textStyle: { color: '#2c333a', fontSize: 12 },
+                            borderRadius: 12,
+                            formatter: function(params) {
+                                if (!params) return '';
+                                var arr = Array.isArray(params) ? params : [params];
+                                if (!arr[0]) return '';
+                                var area = arr[0].name || arr[0].axisValue || '';
+                                var detail = culturalDetailData[area];
+                                if (!detail) return '';
+                                var html = '<div style="font-weight:bold;color:#184c78;margin-bottom:4px;">' + area + ' 总景源' + detail.total + '处</div>';
+                                html += '<div style="font-size:11px;color:#6b7280;margin-bottom:4px;">▫️分级统计景点（' + detail.levelCount + '处）</div>';
+                                var levelNames = { level1: '一级景源', level2: '二级景源', level3: '三级景源', level4: '四级景源' };
+                                var levelColors = { level1: '#1a1a1a', level2: '#5a9b6e', level3: '#74a8cb', level4: '#b8d6eb' };
+                                ['level1', 'level2', 'level3', 'level4'].forEach(function(level) {
+                                    var sites = detail.sites[level];
+                                    if (sites.length > 0) {
+                                        html += '<div style="margin:2px 0;">';
+                                        html += '<span style="color:' + levelColors[level] + ';font-weight:bold;">' + levelNames[level] + '×' + sites.length + '</span>';
+                                        html += '<span style="color:#2c333a;">：' + sites.join('、') + '</span>';
+                                        html += '</div>';
+                                    }
+                                });
+                                if (detail.normalCount > 0) {
+                                    html += '<div style="font-size:11px;color:#6b7280;margin-top:4px;">▫️普通配套景观' + detail.normalCount + '处（不计入分级统计池）</div>';
+                                }
+                                html += '<div style="border-top:1px solid #e5e7eb;margin-top:6px;padding-top:6px;">';
+                                html += '<div style="font-size:11px;color:#6b7280;">全域汇总：<span style="color:#1a1a1a;font-weight:bold;">一级2处(28.5%)</span>、<span style="color:#5a9b6e;font-weight:bold;">二级6处(40%)</span>、<span style="color:#74a8cb;font-weight:bold;">三级4处(25%)</span>、<span style="color:#b8d6eb;font-weight:bold;">四级3处(11.1%)</span></div>';
+                                html += '</div>';
+                                return html;
+                            }
+                        },
+                        legend: {
+                            data: ['一级景源', '二级景源', '三级景源', '四级景源'],
+                            top: 0,
+                            center: 'center',
+                            itemWidth: 12,
+                            itemHeight: 12,
+                            textStyle: { color: '#6b7280', fontSize: 12 },
+                            icon: 'circle'
+                        },
+                        grid: { left: '8%', right: '8%', bottom: '10%', top: '20%', containLabel: true },
+                        backgroundColor: '#e6f2fa',
+                        xAxis: {
+                            type: 'category',
+                            data: sourceData.map(function(d) { return d.area; }),
+                            axisLabel: { color: '#6b7280', fontSize: 12 },
+                            axisLine: { lineStyle: { color: '#e5e7eb' } },
+                            axisTick: { show: false },
+                            splitLine: { show: false }
+                        },
+                        yAxis: {
+                            type: 'value',
+                            min: 0,
+                            max: 6,
+                            interval: 1,
+                            axisLabel: { color: '#6b7280', fontSize: 11 },
+                            axisLine: { show: false },
+                            axisTick: { show: false },
+                            splitLine: { lineStyle: { color: '#d4e8f5', type: 'solid' } }
+                        },
+                        series: [
+                            {
+                                name: '一级景源',
+                                type: 'line',
+                                stack: 'total',
+                                smooth: true,
+                                lineStyle: { color: '#1a1a1a', width: 2 },
+                                itemStyle: { color: '#1a1a1a' },
+                                areaStyle: { color: 'rgba(26, 26, 26, 0.6)' },
+                                emphasis: { areaStyle: { color: 'rgba(26, 26, 26, 0.8)' }, lineStyle: { width: 3 } },
+                                data: sourceData.map(function(d) { return d.level1; })
+                            },
+                            {
+                                name: '二级景源',
+                                type: 'line',
+                                stack: 'total',
+                                smooth: true,
+                                lineStyle: { color: '#5a9b6e', width: 2 },
+                                itemStyle: { color: '#5a9b6e' },
+                                areaStyle: { color: 'rgba(90, 155, 110, 0.4)' },
+                                emphasis: { areaStyle: { color: 'rgba(90, 155, 110, 0.6)' }, lineStyle: { width: 3 } },
+                                data: sourceData.map(function(d) { return d.level2; })
+                            },
+                            {
+                                name: '三级景源',
+                                type: 'line',
+                                stack: 'total',
+                                smooth: true,
+                                lineStyle: { color: '#74a8cb', width: 2 },
+                                itemStyle: { color: '#74a8cb' },
+                                areaStyle: { color: 'rgba(116, 168, 203, 0.3)' },
+                                emphasis: { areaStyle: { color: 'rgba(116, 168, 203, 0.5)' }, lineStyle: { width: 3 } },
+                                data: sourceData.map(function(d) { return d.level3; })
+                            },
+                            {
+                                name: '四级景源',
+                                type: 'line',
+                                stack: 'total',
+                                smooth: true,
+                                lineStyle: { color: '#b8d6eb', width: 2 },
+                                itemStyle: { color: '#b8d6eb' },
+                                areaStyle: { color: 'rgba(184, 214, 235, 0.2)' },
+                                emphasis: { areaStyle: { color: 'rgba(184, 214, 235, 0.4)' }, lineStyle: { width: 3 } },
+                                data: sourceData.map(function(d) { return d.level4; })
+                            }
+                        ]
+                    };
+                    culturalChart.setOption(option);
+                    window.addEventListener('resize', function() { culturalChart && culturalChart.resize(); });
+                }, 500);
+            </script>
+        </div>
+    </div>
+</section>
+
+<!-- 第三章：内有乾坤：全链条业态成熟运营经验 -->
+<section id="section-3" class="py-20 px-4 bg-[#f0f7fc]">
+    <div class="max-w-6xl mx-auto">
+        <div class="bg-white rounded-2xl p-6 mb-10">
+            <h2 class="section-title text-3xl sm:text-4xl mb-6">内有乾坤：全链条业态成熟运营经验</h2>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+                好资源是基础，能把资源运营成稳定的客流和收入，才是真本事。
+            </p>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">
+                近年来，依托丰厚的资源，东湖已经搭建起覆盖观光、休闲、运动、度假、文博的全链条业态，本土运营的成熟度相当可观。不仅本地居民喜爱东湖，外地游客也念念不忘，2025年樱花季外地游客占比达<span class="font-bold text-[#184c78]">77.33%</span>，"五一"假期外地游客占比超<span class="font-bold text-[#184c78]">70%</span>，其中<span class="font-bold text-[#184c78]">90</span>后与<span class="font-bold text-[#184c78]">00</span>后群体占到<span class="font-bold text-[#184c78]">64%</span>。它不只是“城市后花园”，还在逐渐成为辐射全国的文旅目的地。
+            </p>
+            
+            <div class="bg-white rounded-2xl p-6 mb-10 border border-[#e5e7eb]">
+                <div class="flex flex-col items-center">
+                    <div class="flex justify-center mb-4">
+                        <div class="flex items-center mr-6">
+                            <div class="w-3 h-3 rounded-full mr-2" style="background: linear-gradient(135deg, #b8d6eb 0%, #74a8cb 100%);"></div>
+                            <span class="text-[#6b7280] text-sm">本地游客</span>
+                        </div>
+                        <div class="flex items-center mr-6">
+                            <div class="w-3 h-3 rounded-full mr-2" style="background: linear-gradient(135deg, #4a7fa5 0%, #0f4b7a 100%);"></div>
+                            <span class="text-[#6b7280] text-sm">外地游客</span>
+                        </div>
+                        <div class="flex items-center mr-6">
+                            <div class="w-3 h-3 rounded-full mr-2" style="background: linear-gradient(135deg, #9cc4a7 0%, #689973 100%);"></div>
+                            <span class="text-[#6b7280] text-sm">90后和00后</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full mr-2" style="background: linear-gradient(135deg, #d4b88a 0%, #c9a670 100%);"></div>
+                            <span class="text-[#6b7280] text-sm">其他游客</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-center w-full" style="position: relative;">
+                        <img src="https://photo.tuchong.com/1117011/f/245304059.jpg" class="absolute inset-0 w-full h-full opacity-30 pointer-events-none object-cover rounded-lg" alt="东湖背景"/>
+                        <div id="chart-operation-pie-left" class="chart-container w-1/2 h-72"></div>
+                        <div id="chart-operation-pie-right" class="chart-container w-1/2 h-72"></div>
+                    </div>
+                    <div class="flex justify-center w-full mt-2">
+                        <div class="w-1/2 text-center">
+                            <span class="text-[#9ca3af] text-xs">2025年樱花季游客来源占比</span>
+                        </div>
+                        <div class="w-1/2 text-center">
+                            <span class="text-[#9ca3af] text-xs">2025年"五一"游客年龄结构占比</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+            除了前文提及的花卉旅游、多元自然生态体验，体旅融合也是一条成熟赛道。依托开阔水域搭建的专业帆船基地，东湖边常年举办全国商学院帆船赛、武汉水上马拉松等专业赛事。<span class="font-bold text-[#184c78]">105</span>公里环湖绿道串联起<span class="font-bold text-[#184c78]">7</span>段主题景观、<span class="font-bold text-[#184c78]">27</span>个驿站，同时承接汉马东湖赛段、环湖自行车赛、东湖智跑等常年品牌赛事，形成了“水上+陆上”双线并行的运动空间布局，既满足市民日常休闲需求，又能承接专业比赛，二者形成了良性的双向赋能，IP号召力持续稳定。
+        </p>
+        
+        <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+            休闲消费与度假配套也已形成梯度布局。东湖全域有<span class="font-bold text-[#184c78]">10</span>余家咖啡馆，人均消费<span class="font-bold text-[#184c78]">19-360</span>元不等，可覆盖从平价到高端的多元消费需求；全域布局<span class="font-bold text-[#184c78]">35</span>家旅游民宿，旺季周末与节假日入住率超<span class="font-bold text-[#184c78]">90%</span>，推动东湖从“单日观光地”向“多日度假地”转型。其中，大李文创村还集聚了茶社、酒馆等微度假休闲空间，以人均<span class="font-bold text-[#184c78]">50-200</span>元的定位精准匹配年轻客群与文艺爱好者的微度假需求；华侨城东方里商业街也落地了中高端餐饮业态，定位中高端家庭、团建消费。这些产业形成了全面、差异化的消费场景，再搭配欢乐谷<span class="font-bold text-[#184c78]">4A级主题乐园</span>，微度假、婚庆文旅等新业态已经起势。
+        </p>
+        
+        <div class="bg-white rounded-2xl p-6 mb-10 border border-[#e5e7eb]">
+            <div id="chart-consumption-range" style="width: 100%; height: 260px;"></div>
+            <script>
+                setTimeout(function() {
+                    var chart = echarts.init(document.getElementById('chart-consumption-range'));
+                    chart.setOption({
+                        tooltip: {
+                            trigger: 'axis',
+                            backgroundColor: 'rgba(240, 247, 252, 0.98)',
+                            borderColor: '#84b8d8',
+                            borderWidth: 1,
+                            textStyle: { color: '#2c333a', fontSize: 12 },
+                            borderRadius: 12,
+                            axisPointer: { type: 'shadow' }
+                        },
+                        grid: { left: '15%', right: '8%', bottom: '15%', top: '10%', containLabel: true },
+                        xAxis: { type: 'value', min: 0, max: 400, interval: 100, axisLabel: { color: '#6b7280', fontSize: 12 }, axisLine: { lineStyle: { color: '#e5e7eb' } }, axisTick: { show: false }, splitLine: { lineStyle: { color: '#d4e8f5', type: 'solid' } } },
+                        yAxis: { type: 'category', data: ['茶社酒馆', '咖啡馆'], axisLabel: { color: '#6b7280', fontSize: 13 }, axisLine: { show: false }, axisTick: { show: false }, splitLine: { show: false } },
+                        legend: { data: ['最低人均消费', '最高人均消费'], top: 0, textStyle: { color: '#6b7280', fontSize: 12 } },
+                        series: [
+                            { name: '最低人均消费', type: 'bar', data: [50, 19], barWidth: '35%', itemStyle: { color: '#184c78', borderRadius: [4, 0, 0, 4] } },
+                            { name: '最高人均消费', type: 'bar', data: [200, 360], barWidth: '35%', itemStyle: { color: '#74a8cb', borderRadius: [0, 4, 4, 0] } }
+                        ]
+                    });
+                    window.addEventListener('resize', function() { chart && chart.resize(); });
+                }, 500);
+            </script>
+        </div>
+        
+        <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+            文博与科教文旅则构成了纵深补充。<span class="font-bold text-[#184c78]">5A级湖北省博物馆</span>、<span class="font-bold text-[#184c78]">4A级武汉植物园</span>、<span class="font-bold text-[#184c78]">3A级东湖海洋世界</span>，搭配楚天台、楚才园等户外文化景观，学生、科研群体、文化爱好者等多元客群的需求都能被满足。在此之上，历史文化景区可联合打造“楚文化游览线路”，植物园、湿地公园等可主动产出生态研学文创，拉长游客停留时间，让文旅消费从“看风景”延伸到“学知识、品文化”，构建了更深的用户粘性。
+        </p>
+        
+        <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+            除此之外，新赛道，东湖也持续布局：2025年与阿那亚合作打造华中首个大型滨湖文旅项目，占地<span class="font-bold text-[#184c78]">150</span>亩，推动景区从生态观光向沉浸式文化体验转型；同时落地樱花元宇宙、无人驾驶智能游艇、数字人“樱小美”等数字文旅项目，用数字化手段优化线下游览体验，探索智慧文旅的新可能。
+        </p>
+        
+        <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+            总的来看，一边是新业态往全品类、高端、数字化、便民化方向走，接住消费升级的需求；另一边是惠民保障不松——<span class="font-bold text-[#184c78]">20</span>万张政府采购优惠券、各类门票优待、四百多万的纾困奖补，守住了公共景区的底色。东湖“两条腿走路”的本土经验已经十分充足。然而，这一切都极度“内向”。
+        </p>
+        
+        <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">
+            诚然，在文旅产业上，东湖确实存在分布不均衡的问题。全域<span class="font-bold text-[#184c78]">19</span>处历史文化景点，几乎全在听涛、磨山、落雁景区，<span class="font-bold text-[#184c78]">10</span>余家咖啡馆<span class="font-bold text-[#184c78]">8</span>家挤在听涛、梨园片区，落雁、吹笛等片区连正经的咖啡轻餐配套都没有。茶馆、酒馆更是完全扎堆在大李文创村，中高端餐饮也集中在华侨城，其他地区同样拥有优美的自然景观，但因文化资源不丰富、设施不完善，不能充分吸引高端消费者停留，暴露了国际多元服务的短板。
+        </p>
+        
+        <div class="bg-white rounded-2xl p-6 mb-10 border border-[#e5e7eb]">
+            <div id="chart-operation-bar" class="chart-container"></div>
+        </div>
+        
+        <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">
+            但最重要的短板在于“人”和“声”。东湖拥有世界级的资源，却没有做好世界级的待客准备。“游东湖”小程序无多语言版本，景区外文导览、多语种标识、AI外文讲解缺失，也没有针对入境游客的标准化服务流程。当一个不懂中文的游客来到东湖，他将会面临重重困难。更深远的是，东湖没有海外社交媒体账号，这就意味着在国际舆论场“失声”；没有持续性的海外传播叙事，意味着品牌认知度为零。2018年，东湖的省外游客仅占<span class="font-bold text-[#184c78]">8.23%</span>，入境游客更是几乎没有专项统计。若要打造“世界名湖”，对外之道必须重视起来。
+        </p>
+        
+        <div class="bg-white rounded-2xl p-6 mb-10 border border-[#e5e7eb]">
+            <div class="relative bg-[#e6f2fa] rounded-xl p-6 overflow-hidden">
+                <svg class="absolute left-0 top-0 w-64 h-full opacity-10" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
+                    <defs>
+                        <pattern id="bronze-pattern" patternUnits="userSpaceOnUse" width="40" height="40">
+                            <circle cx="20" cy="20" r="8" fill="none" stroke="#6b7280" stroke-width="0.5"/>
+                            <circle cx="20" cy="20" r="4" fill="none" stroke="#6b7280" stroke-width="0.5"/>
+                            <path d="M0 20 Q10 10 20 20 T40 20" fill="none" stroke="#6b7280" stroke-width="0.5"/>
+                            <path d="M20 0 Q10 10 20 20 T20 40" fill="none" stroke="#6b7280" stroke-width="0.5"/>
+                            <rect x="15" y="15" width="10" height="10" fill="none" stroke="#6b7280" stroke-width="0.3" transform="rotate(45 20 20)"/>
+                        </pattern>
+                    </defs>
+                    <path d="M-50 100 Q50 -50 250 100 Q50 250 -50 100" fill="url(#bronze-pattern)" opacity="0.5"/>
+                </svg>
+                
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="flex space-x-0.5">
+                            <svg class="w-8 h-8 cursor-pointer transition-all duration-300 hover:scale-110 hover:brightness-110" viewBox="0 0 40 40" data-tip="2018年省外游客占比仅8.23%，本地省内游客占比91.77%">
+                                <circle cx="20" cy="12" r="8" fill="#185c86" stroke="#185c86" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#185c86"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#185c86" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#b8d6eb" stroke="#b8d6eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#b8d6eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#b8d6eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#b8d6eb" stroke="#b8d6eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#b8d6eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#b8d6eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#b8d6eb" stroke="#b8d6eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#b8d6eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#b8d6eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#b8d6eb" stroke="#b8d6eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#b8d6eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#b8d6eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#b8d6eb" stroke="#b8d6eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#b8d6eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#b8d6eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#b8d6eb" stroke="#b8d6eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#b8d6eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#b8d6eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#b8d6eb" stroke="#b8d6eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#b8d6eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#b8d6eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#b8d6eb" stroke="#b8d6eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#b8d6eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#b8d6eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#b8d6eb" stroke="#b8d6eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#b8d6eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#b8d6eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#b8d6eb" stroke="#b8d6eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#b8d6eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#b8d6eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#b8d6eb" stroke="#b8d6eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#b8d6eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#b8d6eb" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-[#6b7280] text-sm">2018年省外游客占比</div>
+                            <div class="text-[#6b7280] text-sm"><span class="font-bold text-[#74a8cb]">仅8.23%</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex space-x-0.5">
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#e5e7eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#e5e7eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#e5e7eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#e5e7eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#e5e7eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#e5e7eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#e5e7eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#e5e7eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#e5e7eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#e5e7eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#e5e7eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+                            </svg>
+                            <svg class="w-8 h-8" viewBox="0 0 40 40">
+                                <circle cx="20" cy="12" r="8" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1"/>
+                                <path d="M12 24 Q20 35 28 24" fill="#e5e7eb"/>
+                                <path d="M14 20 Q20 25 26 20" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-[#6b7280] text-sm">入境游客占比</div>
+                            <div class="text-[#6b7280] text-sm">无数据</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            setTimeout(function() {
+                var pieLeftChart = echarts.init(document.getElementById('chart-operation-pie-left'));
+                var pieLeftOption = {
+                    tooltip: {
+                        backgroundColor: 'rgba(240, 247, 252, 0.98)',
+                        borderColor: '#84b8d8',
+                        borderWidth: 1,
+                        textStyle: { color: '#2c333a', fontSize: 12 },
+                        borderRadius: 12,
+                        formatter: function(params) {
+                            return '<div style="font-weight:bold;color:#184c78;margin-bottom:2px;">' + params.name + '</div>' +
+                                   '<div style="color:#6b7280;">占比：<span style="font-weight:bold;color:#74a8cb;">' + params.value + '%</span></div>';
+                        }
+                    },
+                    backgroundColor: 'transparent',
+                    series: [
+                        {
+                            name: '樱花季游客来源',
+                            type: 'pie',
+                            radius: ['30%', '70%'],
+                            center: ['50%', '50%'],
+                            label: { show: false },
+                            labelLine: { show: false },
+                            emphasis: {
+                                scale: true,
+                                scaleSize: 5,
+                                itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0,0,0,0.2)' }
+                            },
+                            data: [
+                                { 
+                                    value: 22.67, 
+                                    name: '本地游客', 
+                                    itemStyle: { 
+                                        color: { 
+                                            type: 'linear', 
+                                            x: 0, y: 0, x2: 1, y2: 1, 
+                                            colorStops: [
+                                                { offset: 0, color: '#b8d6eb' },
+                                                { offset: 0.5, color: '#9ac3db' },
+                                                { offset: 1, color: '#74a8cb' }
+                                            ]
+                                        } 
+                                    } 
+                                },
+                                { 
+                                    value: 77.33, 
+                                    name: '外地游客', 
+                                    itemStyle: { 
+                                        color: { 
+                                            type: 'linear', 
+                                            x: 0, y: 0, x2: 1, y2: 1, 
+                                            colorStops: [
+                                                { offset: 0, color: '#4a7fa5' },
+                                                { offset: 0.5, color: '#2a5d85' },
+                                                { offset: 1, color: '#0f4b7a' }
+                                            ]
+                                        } 
+                                    } 
+                                }
+                            ]
+                        }
+                    ]
+                };
+                pieLeftChart.setOption(pieLeftOption);
+                window.addEventListener('resize', function() { pieLeftChart && pieLeftChart.resize(); });
+                
+                var pieRightChart = echarts.init(document.getElementById('chart-operation-pie-right'));
+                var pieRightOption = {
+                    tooltip: {
+                        backgroundColor: 'rgba(240, 247, 252, 0.98)',
+                        borderColor: '#84b8d8',
+                        borderWidth: 1,
+                        textStyle: { color: '#2c333a', fontSize: 12 },
+                        borderRadius: 12,
+                        formatter: function(params) {
+                            return '<div style="font-weight:bold;color:#184c78;margin-bottom:2px;">' + params.name + '</div>' +
+                                   '<div style="color:#6b7280;">占比：<span style="font-weight:bold;color:#74a8cb;">' + params.value + '%</span></div>';
+                        }
+                    },
+                    backgroundColor: 'transparent',
+                    series: [
+                        {
+                            name: '五一游客结构',
+                            type: 'pie',
+                            radius: ['30%', '70%'],
+                            center: ['50%', '50%'],
+                            label: { show: false },
+                            labelLine: { show: false },
+                            emphasis: {
+                                scale: true,
+                                scaleSize: 5,
+                                itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0,0,0,0.2)' }
+                            },
+                            data: [
+                                { 
+                                    value: 64, 
+                                    name: '90后和00后', 
+                                    itemStyle: { 
+                                        color: { 
+                                            type: 'linear', 
+                                            x: 0, y: 0, x2: 1, y2: 1, 
+                                            colorStops: [
+                                                { offset: 0, color: '#9cc4a7' },
+                                                { offset: 0.5, color: '#7ca986' },
+                                                { offset: 1, color: '#689973' }
+                                            ]
+                                        } 
+                                    } 
+                                },
+                                { 
+                                    value: 36, 
+                                    name: '其他游客', 
+                                    itemStyle: { 
+                                        color: { 
+                                            type: 'linear', 
+                                            x: 0, y: 0, x2: 1, y2: 1, 
+                                            colorStops: [
+                                                { offset: 0, color: '#d4b88a' },
+                                                { offset: 0.5, color: '#c4a277' },
+                                                { offset: 1, color: '#c9a670' }
+                                            ]
+                                        } 
+                                    } 
+                                }
+                            ]
+                        }
+                    ]
+                };
+                pieRightChart.setOption(pieRightOption);
+                window.addEventListener('resize', function() { pieRightChart && pieRightChart.resize(); });
+                
+                var barChart = echarts.init(document.getElementById('chart-operation-bar'));
+                var barOption = {
+                    tooltip: {
+                        trigger: 'axis',
+                        backgroundColor: 'rgba(240, 247, 252, 0.98)',
+                        borderColor: '#84b8d8',
+                        borderWidth: 1,
+                        textStyle: { color: '#2c333a', fontSize: 12 },
+                        borderRadius: 12,
+                        axisPointer: { type: 'shadow' },
+                        formatter: function(params) {
+                            if (!params) return '';
+                            var arr = Array.isArray(params) ? params : [params];
+                            if (!arr[0]) return '';
+                            var name = arr[0].name || arr[0].axisValue || '';
+                            var html = '<div style="font-weight:bold;color:#184c78;margin-bottom:4px;">' + name + '</div>';
+                            arr.forEach(function(item) {
+                                html += '<div style="display:flex;justify-content:space-between;width:120px;margin:3px 0;">' +
+                                    '<span>' + item.seriesName + '</span>' +
+                                    '<span style="font-weight:bold;color:#74a8cb;">' + item.value + '家</span>' +
+                                    '</div>';
+                            });
+                            return html;
+                        }
+                    },
+                    legend: {
+                        data: ['咖啡馆', '茶社', '酒馆'],
+                        top: 0,
+                        center: 'center',
+                        textStyle: { color: '#6b7280', fontSize: 12 },
+                        icon: 'circle',
+                        itemWidth: 12,
+                        itemHeight: 12
+                    },
+                    grid: { left: '8%', right: '8%', bottom: '10%', top: '20%', containLabel: true },
+                    backgroundColor: '#e6f2fa',
+                    xAxis: {
+                        type: 'category',
+                        data: ['听涛+梨园片区', '磨山片区', '其他片区'],
+                        axisLabel: { color: '#6b7280', fontSize: 12 },
+                        axisLine: { lineStyle: { color: '#e5e7eb' } },
+                        axisTick: { show: false },
+                        splitLine: { show: false }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        min: 0,
+                        max: 12,
+                        interval: 2,
+                        axisLabel: { color: '#6b7280', fontSize: 11 },
+                        axisLine: { show: false },
+                        axisTick: { show: false },
+                        splitLine: { lineStyle: { color: '#d4e8f5', type: 'solid' } }
+                    },
+                    series: [
+                        {
+                            name: '咖啡馆',
+                            type: 'bar',
+                            data: [8, 1, 0],
+                            itemStyle: { color: '#74a8cb', borderRadius: [4, 4, 0, 0] }
+                        },
+                        {
+                            name: '茶社',
+                            type: 'bar',
+                            data: [4, 0, 0],
+                            itemStyle: { color: '#5a9b6e', borderRadius: [4, 4, 0, 0] }
+                        },
+                        {
+                            name: '酒馆',
+                            type: 'bar',
+                            data: [2, 0, 0],
+                            itemStyle: { color: '#d4a86a', borderRadius: [4, 4, 0, 0] }
+                        }
+                    ],
+                    graphic: [
+                        {
+                            type: 'text',
+                            left: 'center',
+                            bottom: '2%',
+                            style: {
+                                text: '正规咖啡、茶社、酒吧分布',
+                                fill: '#6b7280',
+                                fontSize: 12
+                            }
+                        }
+                    ]
+                };
+                barChart.setOption(barOption);
+                window.addEventListener('resize', function() { barChart && barChart.resize(); });
+                
+                var visitorIconTooltip = document.createElement('div');
+                visitorIconTooltip.style.cssText = 'position:fixed;z-index:9999;pointer-events:none;opacity:0;transition:opacity 0.3s ease;';
+                document.body.appendChild(visitorIconTooltip);
+                
+                var visitorIcons = document.querySelectorAll('#section-3 [data-tip]');
+                visitorIcons.forEach(function(icon) {
+                    icon.addEventListener('mouseenter', function(e) {
+                        var tip = this.getAttribute('data-tip');
+                        visitorIconTooltip.innerHTML = '<div style="background:rgba(240,247,252,0.98);border:1px solid #84b8d8;border-radius:12px;padding:8px 12px;font-size:12px;color:#2c333a;box-shadow:0 4px 12px rgba(0,0,0,0.1);white-space:nowrap;">' + tip + '</div>';
+                        visitorIconTooltip.style.left = (e.clientX + 12) + 'px';
+                        visitorIconTooltip.style.top = (e.clientY - 16) + 'px';
+                        visitorIconTooltip.style.opacity = '1';
+                    });
+                    icon.addEventListener('mousemove', function(e) {
+                        visitorIconTooltip.style.left = (e.clientX + 12) + 'px';
+                        visitorIconTooltip.style.top = (e.clientY - 16) + 'px';
+                    });
+                    icon.addEventListener('mouseleave', function() {
+                        visitorIconTooltip.style.opacity = '0';
+                    });
+                });
+                
+                var xihuVisitorsChart = echarts.init(document.getElementById('chart-xihu-visitors'));
+                var xihuVisitorsOption = {
+                    tooltip: {
+                        backgroundColor: 'rgba(240, 247, 252, 0.98)',
+                        borderColor: '#84b8d8',
+                        borderWidth: 1,
+                        textStyle: { color: '#2c333a', fontSize: 12 },
+                        borderRadius: 12,
+                        axisPointer: { type: 'shadow' },
+                        formatter: function(params) {
+                            if (!params) return '';
+                            var arr = Array.isArray(params) ? params : [params];
+                            if (!arr[0]) return '';
+                            var axisValue = arr[0].axisValue || arr[0].name || '';
+                            var html = '<div style="font-weight:bold;color:#184c78;margin-bottom:4px;">' + axisValue + '</div>';
+                            arr.forEach(function(item) {
+                                html += '<div style="display:flex;justify-content:space-between;width:140px;margin:3px 0;">' +
+                                    '<span>' + item.seriesName + '</span>' +
+                                    '<span style="font-weight:bold;color:#74a8cb;">' + item.value + '万人次</span>' +
+                                    '</div>';
+                            });
+                            return html;
+                        }
+                    },
+                    legend: {
+                        data: ['东湖', '西湖'],
+                        top: 0,
+                        center: 'center',
+                        textStyle: { color: '#6b7280', fontSize: 11 },
+                        icon: 'circle',
+                        itemWidth: 10,
+                        itemHeight: 10
+                    },
+                    grid: { left: '10%', right: '5%', bottom: '20%', top: '20%', containLabel: true },
+                    backgroundColor: '#e6f2fa',
+                    xAxis: {
+                        type: 'category',
+                        data: ['2023年', '2024年', '2025年'],
+                        axisLabel: { color: '#6b7280', fontSize: 11 },
+                        axisLine: { lineStyle: { color: '#e5e7eb' } },
+                        axisTick: { show: false },
+                        splitLine: { show: false }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        min: 0,
+                        max: 5000,
+                        axisLabel: { color: '#6b7280', fontSize: 10 },
+                        axisLine: { show: false },
+                        axisTick: { show: false },
+                        splitLine: { lineStyle: { color: '#d4e8f5', type: 'solid' } }
+                    },
+                    series: [
+                        {
+                            name: '东湖',
+                            type: 'bar',
+                            data: [2445.52, 2550.48, 2712.59],
+                            itemStyle: { color: '#74a8cb', borderRadius: [4, 4, 0, 0] }
+                        },
+                        {
+                            name: '西湖',
+                            type: 'bar',
+                            data: [3100, 3700, 4500],
+                            itemStyle: { color: '#689973', borderRadius: [4, 4, 0, 0] }
+                        }
+                    ],
+                    graphic: [
+                        {
+                            type: 'text',
+                            left: 'center',
+                            bottom: '3%',
+                            style: {
+                                text: '东西湖年游客量对比（万人次）',
+                                fill: '#6b7280',
+                                fontSize: 11
+                            }
+                        }
+                    ]
+                };
+                xihuVisitorsChart.setOption(xihuVisitorsOption);
+                window.addEventListener('resize', function() { xihuVisitorsChart && xihuVisitorsChart.resize(); });
+                
+                var xihuRevenueChart = echarts.init(document.getElementById('chart-xihu-revenue'));
+                var xihuRevenueOption = {
+                    tooltip: {
+                        backgroundColor: 'rgba(240, 247, 252, 0.98)',
+                        borderColor: '#84b8d8',
+                        borderWidth: 1,
+                        textStyle: { color: '#2c333a', fontSize: 12 },
+                        borderRadius: 12,
+                        axisPointer: { type: 'shadow' },
+                        formatter: function(params) {
+                            if (!params) return '';
+                            var arr = Array.isArray(params) ? params : [params];
+                            if (!arr[0]) return '';
+                            var axisValue = arr[0].axisValue || arr[0].name || '';
+                            var html = '<div style="font-weight:bold;color:#184c78;margin-bottom:4px;">' + axisValue + '</div>';
+                            arr.forEach(function(item) {
+                                html += '<div style="display:flex;justify-content:space-between;width:140px;margin:3px 0;">' +
+                                    '<span>' + item.seriesName + '</span>' +
+                                    '<span style="font-weight:bold;color:#74a8cb;">' + item.value + '亿元</span>' +
+                                    '</div>';
+                            });
+                            return html;
+                        }
+                    },
+                    legend: {
+                        data: ['东湖', '西湖'],
+                        top: 0,
+                        center: 'center',
+                        textStyle: { color: '#6b7280', fontSize: 11 },
+                        icon: 'circle',
+                        itemWidth: 10,
+                        itemHeight: 10
+                    },
+                    grid: { left: '10%', right: '5%', bottom: '20%', top: '20%', containLabel: true },
+                    backgroundColor: '#e6f2fa',
+                    xAxis: {
+                        type: 'category',
+                        data: ['2023年', '2024年', '2025年'],
+                        axisLabel: { color: '#6b7280', fontSize: 11 },
+                        axisLine: { lineStyle: { color: '#e5e7eb' } },
+                        axisTick: { show: false },
+                        splitLine: { show: false }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        min: 0,
+                        max: 200,
+                        axisLabel: { color: '#6b7280', fontSize: 10 },
+                        axisLine: { show: false },
+                        axisTick: { show: false },
+                        splitLine: { lineStyle: { color: '#d4e8f5', type: 'solid' } }
+                    },
+                    series: [
+                        {
+                            name: '东湖',
+                            type: 'bar',
+                            data: [71.17, 75.9, 80.1],
+                            itemStyle: { color: '#74a8cb', borderRadius: [4, 4, 0, 0] }
+                        },
+                        {
+                            name: '西湖',
+                            type: 'bar',
+                            data: [126, 138, 150],
+                            itemStyle: { color: '#689973', borderRadius: [4, 4, 0, 0] }
+                        }
+                    ],
+                    graphic: [
+                        {
+                            type: 'text',
+                            left: 'center',
+                            bottom: '3%',
+                            style: {
+                                text: '东西湖年收入对比（亿元）',
+                                fill: '#6b7280',
+                                fontSize: 11
+                            }
+                        }
+                    ]
+                };
+                xihuRevenueChart.setOption(xihuRevenueOption);
+                window.addEventListener('resize', function() { xihuRevenueChart && xihuRevenueChart.resize(); });
+                
+                var xihuInternationalChart = echarts.init(document.getElementById('chart-xihu-international'));
+                var xihuInternationalOption = {
+                    tooltip: {
+                        backgroundColor: 'rgba(240, 247, 252, 0.98)',
+                        borderColor: '#84b8d8',
+                        borderWidth: 1,
+                        textStyle: { color: '#2c333a', fontSize: 12 },
+                        borderRadius: 12,
+                        axisPointer: { type: 'shadow' },
+                        formatter: function(params) {
+                            if (!params) return '';
+                            var arr = Array.isArray(params) ? params : [params];
+                            if (!arr[0]) return '';
+                            var axisValue = arr[0].axisValue || arr[0].name || '';
+                            var unit = '';
+                            if (axisValue.includes && axisValue.includes('粉丝')) unit = '万';
+                            else if (axisValue.includes && axisValue.includes('语种')) unit = '种';
+                            else unit = '个';
+                            var html = '<div style="font-weight:bold;color:#184c78;margin-bottom:4px;">' + axisValue + '</div>';
+                            arr.forEach(function(item) {
+                                html += '<div style="display:flex;justify-content:space-between;width:140px;margin:3px 0;">' +
+                                    '<span>' + item.seriesName + '</span>' +
+                                    '<span style="font-weight:bold;color:#74a8cb;">' + item.value + unit + '</span>' +
+                                    '</div>';
+                            });
+                            return html;
+                        }
+                    },
+                    legend: {
+                        data: ['东湖', '西湖'],
+                        top: 0,
+                        center: 'center',
+                        textStyle: { color: '#6b7280', fontSize: 11 },
+                        icon: 'circle',
+                        itemWidth: 10,
+                        itemHeight: 10
+                    },
+                    grid: { left: '15%', right: '5%', bottom: '25%', top: '20%', containLabel: true },
+                    backgroundColor: '#e6f2fa',
+                    xAxis: {
+                        type: 'category',
+                        data: ['官方海外社媒账号', '海外社媒总粉丝量', '官方线上服务语种'],
+                        axisLabel: { 
+                            color: '#6b7280', 
+                            fontSize: 10, 
+                            interval: 0,
+                            formatter: function(value) {
+                                if (value === '官方海外社媒账号') return '官方海外\n社媒账号';
+                                if (value === '海外社媒总粉丝量') return '海外社媒\n总粉丝量';
+                                if (value === '官方线上服务语种') return '官方线上\n服务语种';
+                                return value;
+                            }
+                        },
+                        axisLine: { lineStyle: { color: '#e5e7eb' } },
+                        axisTick: { show: false },
+                        splitLine: { show: false }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        min: 0,
+                        max: 180,
+                        axisLabel: { color: '#6b7280', fontSize: 10 },
+                        axisLine: { show: false },
+                        axisTick: { show: false },
+                        splitLine: { lineStyle: { color: '#d4e8f5', type: 'solid' } }
+                    },
+                    series: [
+                        {
+                            name: '东湖',
+                            type: 'bar',
+                            data: [0, 0, 1],
+                            itemStyle: { color: '#74a8cb', borderRadius: [4, 4, 0, 0] }
+                        },
+                        {
+                            name: '西湖',
+                            type: 'bar',
+                            data: [7, 164.7, 12],
+                            itemStyle: { color: '#689973', borderRadius: [4, 4, 0, 0] }
+                        }
+                    ],
+                    graphic: [
+                        {
+                            type: 'text',
+                            left: 'center',
+                            bottom: '3%',
+                            style: {
+                                text: '东西湖国际化核心指标对比（个/万/种）',
+                                fill: '#6b7280',
+                                fontSize: 11
+                            }
+                        }
+                    ]
+                };
+                xihuInternationalChart.setOption(xihuInternationalOption);
+                window.addEventListener('resize', function() { xihuInternationalChart && xihuInternationalChart.resize(); });
+                
+                var xihuCardTooltip = document.createElement('div');
+                xihuCardTooltip.style.cssText = 'position:fixed;z-index:9999;pointer-events:none;opacity:0;transition:opacity 0.2s ease;';
+                document.body.appendChild(xihuCardTooltip);
+                var xihuTooltipTimeout = null;
+                
+                var xihuCards = document.querySelectorAll('#section-xihu [data-tip]');
+                xihuCards.forEach(function(card) {
+                    card.addEventListener('mouseenter', function(e) {
+                        clearTimeout(xihuTooltipTimeout);
+                        xihuCardTooltip.style.opacity = '0';
+                        var tip = this.getAttribute('data-tip');
+                        xihuCardTooltip.innerHTML = '<div style="background:rgba(240,247,252,0.98);border:1px solid #84b8d8;border-radius:12px;padding:8px 12px;font-size:12px;color:#2c333a;box-shadow:0 4px 12px rgba(0,0,0,0.1);max-width:280px;">' + tip + '</div>';
+                        xihuCardTooltip.style.left = (e.clientX + 15) + 'px';
+                        xihuCardTooltip.style.top = (e.clientY - 20) + 'px';
+                        xihuTooltipTimeout = setTimeout(function() {
+                            xihuCardTooltip.style.opacity = '1';
+                        }, 100);
+                    });
+                    card.addEventListener('mousemove', function(e) {
+                        xihuCardTooltip.style.left = (e.clientX + 15) + 'px';
+                        xihuCardTooltip.style.top = (e.clientY - 20) + 'px';
+                    });
+                    card.addEventListener('mouseleave', function() {
+                        clearTimeout(xihuTooltipTimeout);
+                        xihuCardTooltip.style.opacity = '0';
+                    });
+                });
+                
+            }, 600);
+        </script>
+        </div>
+    </div>
+</section>
+
+<!-- 第四章：他山之石：西湖国际化的底层逻辑 -->
+<section id="section-xihu" class="py-20 px-4 bg-[#f0f7fc]">
+    <div class="max-w-6xl mx-auto">
+        <div class="bg-white rounded-2xl p-6 mb-10">
+            <h2 class="section-title text-3xl sm:text-4xl mb-6">他山之石：西湖国际化的底层逻辑</h2>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">
+                说到湖景景区海外成熟IP，杭州西湖必定榜上有名。西湖在国际化运营上起步更早，目前已形成一套较为完整的运营逻辑，其出海经验可为东湖提供参考。
+            </p>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">
+                从数据上看，两地的发展确实存在着显著的差异。
+            </p>
+            <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">
+                年游客量上，截至2025年底，东湖始终未突破<span class="font-bold text-[#184c78]">3000</span>万人次，而西湖的年客流量从2023年的约<span class="font-bold text-[#184c78]">3100</span>万人次一直快速增长到2025年的约<span class="font-bold text-[#184c78]">4500</span>万人次；年收入上，2025年东湖收入达到历史最高值<span class="font-bold text-[#184c78]">80.1</span>亿，而西湖已高达<span class="font-bold text-[#184c78]">150</span>亿元；国际化核心指标方面，西湖运营着<span class="font-bold text-[#184c78]">7</span>个官方海外社交媒体账号，总粉丝量达<span class="font-bold text-[#184c78]">164.7</span>万人次，官方线上服务覆盖<span class="font-bold text-[#184c78]">12</span>种语言，而在这些维度，东湖才稍稍起步，尚无进展。
+            </p>
+            <div class="bg-white rounded-2xl p-6 mb-10 border border-[#e5e7eb]">
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div id="chart-xihu-visitors" class="chart-container h-72"></div>
+                    <div id="chart-xihu-revenue" class="chart-container h-72"></div>
+                    <div id="chart-xihu-international" class="chart-container h-72"></div>
+                </div>
+            </div>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+                从自然资源到文化资源再到全新业态，东湖并不逊色于西湖，之所以仍未取得较大突破，是因为还未像西湖一般开辟一条完整的出海路径。首先是价值锚定，用顶层IP与国际认证，构建全球文化辨识度。2011年列入《世界遗产名录》后，西湖没有只守着这块牌子，而是联动良渚、大运河打包输出“5000年中国看杭州”的统一品牌，还和意大利维罗纳等海外世界遗产地结对，常态化做跨国文化对话。它把“东方山水美学”做成了全球游客能读懂的文化符号，在全域<span class="font-bold text-[#184c78]">122</span>处景点中镶嵌<span class="font-bold text-[#184c78]">31</span>处各级文保单位，形成“西湖十景——新西湖十景——三评西湖十景”三级景观体系。
+            </p>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+                其次是常态化传播运营，搭建完整的海外触达渠道。一方面，畅通对外运营，海外官方账号“Hangzhou,China”年曝光<span class="font-bold text-[#184c78]">6700</span>万次，定期推出西湖四季、宋韵文化、茶道短视频；搭建多语种元宇宙数字展厅，面向全球开放线上西湖展馆。另一方面，强化多渠道合作，联合德国途易等全球头部旅行商上线主题线路，定期去海外城市参加旅游展、做推介，并招募十国海外达人用原生视角产出内容。
+            </p>
+
+            <div class="bg-white rounded-2xl p-6 mb-10 border border-[#e5e7eb]">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-[#e6f2fa] rounded-xl p-6 cursor-pointer transition-all duration-300 hover:brightness-105" data-tip="西湖全域122处景点中镶嵌31处各级文保单位，形成三级景观体系">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-8 h-8 text-[#74a8cb] mr-3" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M5 15 L35 15 M5 25 L35 25 M5 10 L35 10"/>
+                                <rect x="8" y="5" width="24" height="30" fill="none" stroke="currentColor" stroke-width="1.5" rx="2"/>
+                                <path d="M12 20 L28 20"/>
+                            </svg>
+                            <span class="text-[#184c78] font-medium">文化遗产</span>
+                        </div>
+                        <div class="text-3xl font-bold text-[#74a8cb]">122</div>
+                        <div class="text-[#6b7280] text-sm mt-1">处景点</div>
+                        <div class="text-[#6b7280] text-sm">含31处各级文保单位</div>
+                    </div>
+                    <div class="bg-[#e6f2fa] rounded-xl p-6 cursor-pointer transition-all duration-300 hover:brightness-105" data-tip="海外官方账号'Hangzhou,China'年曝光6700万次，定期推出西湖四季、宋韵文化、茶道短视频">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-8 h-8 text-[#5a9b6e] mr-3" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="20" cy="20" r="15" fill="none" stroke="currentColor"/>
+                                <path d="M20 8 L20 20 L28 24"/>
+                                <circle cx="20" cy="8" r="3" fill="currentColor"/>
+                            </svg>
+                            <span class="text-[#184c78] font-medium">海外传播</span>
+                        </div>
+                        <div class="text-3xl font-bold text-[#5a9b6e]">164.7万</div>
+                        <div class="text-[#6b7280] text-sm mt-1">2025粉丝</div>
+                        <div class="text-[#6b7280] text-sm">年曝光6700万次</div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+                第三是全链条服务适配，把“想来”变成“能来”“好来”。多语言硬件方面，路标配齐英、日、韩、法四语种标识，并在全域布设AI实时翻译导览终端；细分市场方面，针对欧美、日韩不同客群分别打造茶道、宋韵夜游、湿地研学小包团专属线路。
+            </p>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+                最后是民间文化共情，以交流替代宣传，持续扩大海外声量。西湖国际摄影展、宋韵文化海外巡展、世界遗产国际影像大展、外国人深度探访、国际友人结对市民家庭文化交流……这些活动弱化了宣传感，用普通人的视角传递文化温度，反而能形成更持久的认同。
+            </p>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">
+                同为大型湖景景区，东湖与西湖的情况并不完全相同，东湖有自己的独特性：城湖共生超大生态样本、厚重荆楚文化、科研级四季花卉资源、“大江大湖”的开阔格局……若将这些差异化、精品化的叙事素材，创新性地融入以验证成功的“价值锚定-渠道触达－服务承接－文化共情”的西湖模式，放大资源优势、补齐发展不均衡的缺口，系统化搭建国际传播与服务体系、打造专属国际活动，最终形成品牌效应和长效吸引力。
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- 第五章：结语 -->
+<section id="section-6" class="py-20 px-4 relative overflow-hidden bg-[#f0f7fc]">
+    <div class="watermark-text -top-32 right-10 opacity-20">结语</div>
+    <div class="max-w-6xl mx-auto">
+        <div class="bg-white rounded-2xl p-6 mb-10 border border-[#e5e7eb]">
+            <h2 class="section-title text-3xl sm:text-4xl mb-6">结语</h2>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+                东湖的国际化，究竟应该怎么走？答案就在这片湖自己的生长脉络中。
+            </p>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+                本土提质与国际出海，一直是同根共生的一体两面；把自己的日子过扎实，把脚下的土地照料好，永远是向外表达的底气。而向外的传播，除了搭建好多语言导览、海外传播矩阵、特色国际线路、常态化交流赛事等框架，更重要的是人。是生活在周边的人对这片湖自然而然的爱惜与骄傲，也是生活在武汉的外国人的由衷地认可。这些由普通人的热爱堆砌出来的文化自信，才是东湖最不可复制的国际名片——这种由内而外散发出的自洽、和谐、希望，是能真正跨越语言与文化隔阂的符号。
+            </p>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-8 text-indent">
+                风过湖面时，会携着四季花香，也会载着这些鲜活的故事飘向远方。武汉这座城，有大江大湖的开阔胸襟，也有藏在烟火里的坚韧与温柔。我们渴望东湖被世界看见，渴望荆楚文化的厚重、城湖共生的智慧、东方四季的美学，能顺着湖风，越过山海，落到更远的人的心上。
+            </p>
+            
+            <p class="text-[#6b7280] leading-relaxed mb-10 text-indent">
+                所以，我们只管守好山水、讲好故事、搭好桥梁、过好日子，剩下的，山高水远，岁月悠长，东湖的故事，总会慢慢讲到世界面前去。
+            </p>
+        </div>
+
+        <!-- 折叠式数据源说明 -->
+        <div class="bg-[#206090] rounded-2xl overflow-hidden">
+            <div class="p-6 cursor-pointer flex items-center justify-between bg-[#206090]" id="data-source-header">
+                <h3 class="font-light text-white">数据源说明</h3>
+                <svg id="data-source-arrow" class="w-5 h-5 text-white transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+            <div id="data-source-content" class="accordion-content bg-white open">
+                <div class="p-8 max-h-[500px] overflow-y-auto">
+                    <h4 class="font-light text-[#206090] mb-4 text-lg">一、官方数据</h4>
+                    <div class="space-y-4 text-[#6b7280] text-sm leading-relaxed">
+                        <div>
+                            <span class="text-[#84b8d8] mr-2">•</span>
+                            东湖风景区概况（截至2025年，景区面积、景点数量、文保单位、世界遗产身份等）
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="https://www.whdonghu.gov.cn/zwgk_6255/xxgkml/jgsz/dwjj/" target="_blank" class="hover:underline">https://www.whdonghu.gov.cn/zwgk_6255/xxgkml/jgsz/dwjj/</a>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-[#84b8d8] mr-2">•</span>
+                            东湖风景区年度游客量、旅游综合收入及增速（2023—2025年）
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="https://www.whdonghu.gov.cn/bmzd/whlytyj_74658/zfxxgknb11/202401/t20240124_2349147.shtml" target="_blank" class="hover:underline">https://www.whdonghu.gov.cn/bmzd/whlytyj_74658/zfxxgknb11/202401/t20240124_2349147.shtml</a>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-[#84b8d8] mr-2">•</span>
+                            西湖风景名胜区对比数据（2024—2026年景点数量、文保单位、世界遗产、季度收费景点客流量等）
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="https://westlake.hangzhou.gov.cn/col/col1229288574/art/2026/art_9563b563d99c4f1ba2d96fdd467231d7.html" target="_blank" class="hover:underline">https://westlake.hangzhou.gov.cn/col/col1229288574/art/2026/art_9563b563d99c4f1ba2d96fdd467231d7.html</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="font-light text-[#206090] mt-8 mb-4 text-lg">二、新闻报道与官方媒体</h4>
+                    <div class="space-y-4 text-[#6b7280] text-sm leading-relaxed">
+                        <div>
+                            <span class="text-[#84b8d8] mr-2">•</span>
+                            东湖年度游客量首破2500万人次等综合报道（新华网）
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="http://hb.news.cn/20250110/acfd5d9c59fc4a308700b3f3e55d014a/c.html" target="_blank" class="hover:underline">http://hb.news.cn/20250110/acfd5d9c59fc4a308700b3f3e55d014a/c.html</a>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-[#84b8d8] mr-2">•</span>
+                            东湖花卉资源、环境保护情况等数据（长江日报）
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="https://swj.wuhan.gov.cn/tzdt/jcss/202601/t20260106_2707148.html" target="_blank" class="hover:underline">https://swj.wuhan.gov.cn/tzdt/jcss/202601/t20260106_2707148.html</a>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-[#84b8d8] mr-2">•</span>
+                            春节假期客流数据（2025年、2026年，极目新闻）
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="http://news.cjn.cn/whpd/yw_19947/202502/t5080540.htm" target="_blank" class="hover:underline">http://news.cjn.cn/whpd/yw_19947/202502/t5080540.htm</a>
+                            </div>
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="https://news.qq.com/rain/a/20260223A05GRF00" target="_blank" class="hover:underline">https://news.qq.com/rain/a/20260223A05GRF00</a>
+                            </div>
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="http://hbwh.wenming.cn/sense_wh/202501/t20250112_8793186.html" target="_blank" class="hover:underline">http://hbwh.wenming.cn/sense_wh/202501/t20250112_8793186.html</a>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-[#84b8d8] mr-2">•</span>
+                            “五一”假期客流量及客源结构（2024–2026年，武汉市人民政府、长江日报）
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="https://www.wuhan.gov.cn/sy/whyw/202505/t20250506_2577147.shtml" target="_blank" class="hover:underline">https://www.wuhan.gov.cn/sy/whyw/202505/t20250506_2577147.shtml</a>
+                            </div>
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="http://news.cjn.cn/shxw/202605/t5289721.htm" target="_blank" class="hover:underline">http://news.cjn.cn/shxw/202605/t5289721.htm</a>
+                            </div>
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="https://www.wuhan.gov.cn/sy/whyw/202405/t20240506_2396694.shtml" target="_blank" class="hover:underline">https://www.wuhan.gov.cn/sy/whyw/202405/t20240506_2396694.shtml</a>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-[#84b8d8] mr-2">•</span>
+                            樱花季客流量与客源（2023—2025年，湖北日报、武汉晚报）
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="https://app.xinhuanet.com/news/article.html?articleId=17a5e7be5597004f96f00e1600780743" target="_blank" class="hover:underline">https://app.xinhuanet.com/news/article.html?articleId=17a5e7be5597004f96f00e1600780743</a>
+                            </div>
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="https://sw.wuhan.gov.cn/xwdt/mtbd/202304/t20230407_2182155.shtml" target="_blank" class="hover:underline">https://sw.wuhan.gov.cn/xwdt/mtbd/202304/t20230407_2182155.shtml</a>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-[#84b8d8] mr-2">•</span>
+                            东湖国际传播与品牌定位（武汉市政府工作报告）
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="https://mp.weixin.qq.com/s?__biz=MzA4MzA4OTUwNw==&mid=2650343916&idx=1&sn=86a908a4cadbbbd4ca26bb104bf7c455&poc_token=HEwQVmqjuWUbJ6wHP-F1AnwyIPzCJa46wRyykmXM" target="_blank" class="hover:underline">https://mp.weixin.qq.com/s?__biz=MzA4MzA4OTUwNw==&mid=2650343916&idx=1&sn=86a908a4cadbbbd4ca26bb104bf7c455&poc_token=HEwQVmqjuWUbJ6wHP-F1AnwyIPzCJa46wRyykmXM</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="font-light text-[#206090] mt-8 mb-4 text-lg">三、第三方平台与行业研究报告</h4>
+                    <div class="space-y-4 text-[#6b7280] text-sm leading-relaxed">
+                        <div>
+                            <span class="text-[#84b8d8] mr-2">•</span>
+                            东湖游客客源结构（2018年，佰策地产文库）
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="https://www.dcbbs.com/p-206769.html" target="_blank" class="hover:underline">https://www.dcbbs.com/p-206769.html</a>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-[#84b8d8] mr-2">•</span>
+                            西湖2025年旅游总收入突破150亿元（今日头条）
+                            <div class="ml-4 mt-1 text-[#74a8cb] break-all">
+                                <a href="https://www.toutiao.com/article/7589823168102121993/" target="_blank" class="hover:underline">https://www.toutiao.com/article/7589823168102121993/</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 页脚 -->
+<footer class="py-8 px-4 bg-[#2c333a]">
+    <div class="max-w-6xl mx-auto text-center">
+        <p class="text-white/80 text-sm">湖畔东风起——武汉东湖叩问"世界级"</p>
+    </div>
+</footer>
+
+<!-- 弹窗 -->
+<div id="modal" class="modal-overlay fixed inset-0 z-50 hidden flex items-center justify-center px-4">
+    <div class="bg-white rounded-2xl p-8 max-w-lg w-full max-h-[85vh] overflow-y-auto fade-in shadow-2xl border border-[#e5e7eb]">
+        <div class="flex justify-between items-center mb-6">
+            <h3 id="modal-title" class="text-xl font-light text-[#206090]">弹窗标题</h3>
+            <button id="modal-close" class="text-[#c4cdd5] hover:text-[#6b7280] transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div id="modal-content" class="text-[#6b7280] leading-relaxed"></div>
+    </div>
+</div>
+
+<script>
+const visitorData = [
+    { year: '2021', visitors: 2152.61, revenue: null },
+    { year: '2022', visitors: 1412.86, revenue: null },
+    { year: '2023', visitors: 2445.52, revenue: 71.18 },
+    { year: '2024', visitors: 2550.48, revenue: 75.90 },
+    { year: '2025', visitors: 2712.59, revenue: 80.10 }
+];
+
+const highlightData = {
+    '2021': '游客量2152.61万人次，成为外交部全球推介武汉核心名片',
+    '2022': '游客量1412.86万人次，受疫情影响有所回落',
+    '2023': '游客量2445.52万人次，旅游收入71.18亿元，东湖绿道获评"世界最美绿道"',
+    '2024': '游客量2550.48万人次，旅游收入75.90亿元，央视报道43次',
+    '2025': '游客量2712.59万人次，旅游收入80.10亿元，赏花产业引流480万人次，央视报道50次'
+};
+
+const ecologyData = {
+    '水域': { children: [{ name: '东湖水域', value: 33 }, { name: '子湖', value: 6 }], total: 39 },
+    '森林': { children: [{ name: '山林面积', value: 3200 }, { name: '珍稀树种', value: 120 }], total: 3200 },
+    '山峰': { children: [{ name: '磨山', value: 110 }, { name: '珞珈山', value: 118 }, { name: '其他', value: 80 }], total: 12 },
+    '湿地': { children: [{ name: '东湖湿地', value: 500 }, { name: '候鸟栖息地', value: 12 }], total: 500 }
+};
+
+const flowerData = {
+    spring: { name: '樱花', count: 10000, varieties: 58, global: '世界三大赏樱地之一' },
+    summer: { name: '荷花', count: 20000, varieties: 300, global: '中国最大荷花品种资源圃' },
+    autumn: { name: '桂花', count: 5000, varieties: 32, global: '华中地区最大桂花观赏园' },
+    winter: { name: '梅花', count: 3000, varieties: 150, global: '中国四大梅园之一' }
+};
+
+const worldSakuraData = [
+    { name: '武汉东湖', value: 10000 },
+    { name: '日本京都', value: 30000 },
+    { name: '美国华盛顿', value: 3700 }
+];
+
+const culturalData = {
+    '听涛': { level1: 2, level2: 5, level3: 8, level4: 12, total: 27, sites: ['海光农圃', '行吟阁', '屈原纪念馆'] },
+    '磨山': { level1: 4, level2: 8, level3: 10, level4: 15, total: 37, sites: ['东湖梅园', '樱花园', '楚城'] },
+    '落雁': { level1: 1, level2: 3, level3: 5, level4: 8, total: 17, sites: ['落雁岛', '鹊桥', '雁洲索桥'] },
+    '其他': { level1: 1, level2: 2, level3: 3, level4: 5, total: 11, sites: ['东湖会晤旧址', '九女墩'] }
+};
+
+const pieDataSakura = [
+    { value: 45, name: '外地游客' },
+    { value: 35, name: '本地游客' },
+    { value: 15, name: '高校学生' },
+    { value: 5, name: '商务人士' }
+];
+
+const pieDataMayday = [
+    { value: 60, name: '外地游客' },
+    { value: 25, name: '本地游客' },
+    { value: 10, name: '高校学生' },
+    { value: 5, name: '商务人士' }
+];
+
+const pieDataYoungSakura = [
+    { value: 70, name: '90后' },
+    { value: 25, name: '00后' },
+    { value: 5, name: '其他' }
+];
+
+const pieDataYoungMayday = [
+    { value: 65, name: '90后' },
+    { value: 30, name: '00后' },
+    { value: 5, name: '其他' }
+];
+
+const areaFacilityData = {
+    '听涛梨园': { coffee: 12, tea: 8, bar: 3 },
+    '磨山': { coffee: 8, tea: 6, bar: 2 },
+    '落雁': { coffee: 2, tea: 3, bar: 0 },
+    '其他': { coffee: 4, tea: 4, bar: 1 }
+};
+
+const compareData = [
+    { name: '年客流', dong: '1230万', xi: '2850万' },
+    { name: '年收入', dong: '98.6亿', xi: '256亿' },
+    { name: '海外账号', dong: '0个', xi: '8个' },
+    { name: '服务语种', dong: '1种', xi: '12种' }
+];
+
+const radarData = {
+    donghu: [65, 52, 10, 5, 20],
+    xihu: [95, 88, 75, 80, 65],
+    indicators: ['客流规模', '文旅营收', '海外传播', '多语种服务', '国际活动']
+};
+
+const yearLineData = {
+    '2023': { donghu: [680, 890], xihu: [2100, 2300] },
+    '2024': { donghu: [1230, 1860], xihu: [2500, 2700] },
+    '2025': { donghu: [1860, 2340], xihu: [2700, 2850] }
+};
+
+let chartVisitorRevenue, chartEcologyTree, chartFlower, chartCulturalStack, chartPieSakura, chartPieMayday, chartAreaBar, chartRadar, chartYearLine;
+
+function initCharts2() {
+    console.log('Initializing charts 2...');
+    
+    chartEcologyBar = echarts.init(document.getElementById('chart-ecology-bar'));
+    chartFlowerRing = echarts.init(document.getElementById('chart-flower-ring'));
+    chartCulturalStack = echarts.init(document.getElementById('chart-cultural-stack'));
+    chartPieSakura = echarts.init(document.getElementById('chart-pie-sakura'));
+    chartPieMayday = echarts.init(document.getElementById('chart-pie-mayday'));
+    chartAreaBar = echarts.init(document.getElementById('chart-area-bar'));
+    chartRadar = echarts.init(document.getElementById('chart-radar'));
+    chartYearLine = echarts.init(document.getElementById('chart-year-line'));
+
+    renderEcologyBarChart();
+    renderFlowerRingChart();
+    renderCulturalStackChart();
+    renderPieCharts(pieDataSakura, pieDataMayday);
+    renderAreaBarChart('all');
+    renderRadarChart([0,1,2,3,4]);
+    renderYearLineChart('2023');
+}
+
+function renderVisitorRevenueChart(data) {
+    if (!chartVisitorRevenue) {
+        console.error('chartVisitorRevenue is null');
+        return;
+    }
+    
+    const option = {
+        tooltip: { 
+            trigger: 'axis',
+            backgroundColor: 'rgba(240, 247, 252, 0.98)',
+            borderColor: '#84b8d8',
+            borderWidth: 1,
+            textStyle: { color: '#2c333a' },
+            borderRadius: 12
+        },
+        legend: { 
+            data: ['游客量（万人次）', '旅游收入（亿元）'],
+            bottom: 10,
+            textStyle: { color: '#6b7280', fontSize: 12 }
+        },
+        grid: { left: '10%', right: '10%', bottom: '15%', top: '10%', containLabel: true },
+        xAxis: { 
+            type: 'category', 
+            data: data.map(d => d.year),
+            axisLabel: { color: '#6b7280', fontSize: 12 },
+            axisLine: { lineStyle: { color: '#e5e7eb' } },
+            axisTick: { show: false }
+        },
+        yAxis: [
+            { 
+                type: 'value', 
+                name: '游客量（万人次）',
+                axisLabel: { color: '#6b7280', fontSize: 11 },
+                axisLine: { show: false },
+                axisTick: { show: false },
+                splitLine: { lineStyle: { color: '#e5e7eb', type: 'dashed' } },
+                nameTextStyle: { color: '#6b7280', fontSize: 11 }
+            },
+            { 
+                type: 'value', 
+                name: '旅游收入（亿元）',
+                axisLabel: { color: '#6b7280', fontSize: 11 },
+                axisLine: { show: false },
+                axisTick: { show: false },
+                splitLine: { show: false },
+                nameTextStyle: { color: '#6b7280', fontSize: 11 }
+            }
+        ],
+        series: [
+            { 
+                name: '游客量（万人次）', 
+                type: 'line', 
+                data: data.map(d => d.visitors),
+                lineStyle: { color: '#206090', width: 3 },
+                itemStyle: { color: '#206090' },
+                smooth: true,
+                symbol: 'circle',
+                symbolSize: 8
+            },
+            { 
+                name: '旅游收入（亿元）', 
+                type: 'line', 
+                yAxisIndex: 1,
+                data: data.map(d => d.revenue),
+                lineStyle: { color: '#84b8d8', width: 3 },
+                itemStyle: { color: '#84b8d8' },
+                smooth: true,
+                symbol: 'circle',
+                symbolSize: 8
+            }
+        ]
+    };
+    chartVisitorRevenue.setOption(option);
+    
+    chartVisitorRevenue.on('click', function(params) {
+        if (params.dataIndex === 4) {
+            showModal('2025年赏花产业专项数据', `
+                <div class="bg-[#f0f7fc] rounded-xl p-6 text-center">
+                    <p class="text-[#2c333a] leading-relaxed">2025东湖赏花产业专项数据：全年引流480万人次，直接创收1.37亿元，本年旅游收入80.1亿元，超额完成"十四五"文旅收入目标</p>
+                </div>
+            `);
+        }
+    });
+}
+
+function renderEcologyBarChart() {
+    const option = {
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: 'rgba(240, 247, 252, 0.98)',
+            borderColor: '#84b8d8',
+            borderWidth: 1,
+            textStyle: { color: '#2c333a' },
+            borderRadius: 12,
+            axisPointer: { type: 'shadow' }
+        },
+        grid: { left: '15%', right: '8%', bottom: '15%', top: '10%', containLabel: true },
+        xAxis: {
+            type: 'value',
+            axisLabel: { color: '#9ca3af', fontSize: 11 },
+            axisLine: { show: false },
+            axisTick: { show: false },
+            splitLine: { lineStyle: { color: '#e5e7eb', type: 'dashed' } }
+        },
+        yAxis: {
+            type: 'category',
+            data: ['保护动植物', '森林植被', '湿地', '环湖山峰', '水域面积', '风景名胜区', '辖区总面积'],
+            axisLabel: { color: '#6b7280', fontSize: 12 },
+            axisLine: { show: false },
+            axisTick: { show: false }
+        },
+        series: [{
+            name: '生态指标',
+            type: 'bar',
+            data: [
+                { value: 216, itemStyle: { color: '#74a8cb' } },
+                { value: 1000, itemStyle: { color: '#74a8cb' } },
+                { value: 300, itemStyle: { color: '#74a8cb' } },
+                { value: 34, itemStyle: { color: '#74a8cb' } },
+                { value: 34.15, itemStyle: { color: '#184c78' } },
+                { value: 61.86, itemStyle: { color: '#184c78' } },
+                { value: 81.68, itemStyle: { color: '#184c78' } }
+            ],
+            barWidth: '50%',
+            itemStyle: { borderRadius: [0, 4, 4, 0] }
+        }]
+    };
+    chartEcologyBar.setOption(option);
+}
+
+function renderFlowerRingChart() {
+    const option = {
+        tooltip: {
+            trigger: 'item',
+            backgroundColor: 'rgba(240, 247, 252, 0.98)',
+            borderColor: '#84b8d8',
+            borderWidth: 1,
+            textStyle: { color: '#2c333a' },
+            borderRadius: 12,
+            formatter: function(params) {
+                const periods = {
+                    '春樱': '3-4月',
+                    '夏荷': '6-8月',
+                    '秋桂': '9-10月',
+                    '冬梅': '12-2月'
+                };
+                return params.name + '<br/>花期：' + periods[params.name] + '<br/>品种数：' + params.value + '种';
+            }
+        },
+        series: [{
+            type: 'pie',
+            radius: ['45%', '70%'],
+            center: ['50%', '50%'],
+            avoidLabelOverlap: false,
+            itemStyle: { borderRadius: 8, borderColor: '#fff', borderWidth: 2 },
+            label: { show: false, position: 'center' },
+            emphasis: { label: { show: true, fontSize: 16, fontWeight: 'bold', color: '#2c333a' } },
+            labelLine: { show: false },
+            data: [
+                { value: 50, name: '春樱', itemStyle: { color: '#f8d6e0' } },
+                { value: 700, name: '夏荷', itemStyle: { color: '#74a8cb' } },
+                { value: 32, name: '秋桂', itemStyle: { color: '#d4a86a' } },
+                { value: 320, name: '冬梅', itemStyle: { color: '#e5e7eb' } }
+            ]
+        }]
+    };
+    chartFlowerRing.setOption(option);
+}
+
+function renderCulturalStackChart() {
+    console.log('renderCulturalStackChart called, chartCulturalStack:', chartCulturalStack);
+    if (!chartCulturalStack) {
+        console.error('chartCulturalStack is null!');
+        return;
+    }
+    const sourceData = [
+        { area: '听涛景区', level1: 1, level2: 2, level3: 2, level4: 1 },
+        { area: '磨山景区', level1: 1, level2: 2, level3: 2, level4: 1 },
+        { area: '落雁景区', level1: 0, level2: 1, level3: 0, level4: 3 },
+        { area: '白马景区', level1: 0, level2: 1, level3: 0, level4: 0 },
+        { area: '周边地区', level1: 0, level2: 0, level3: 0, level4: 2 }
+    ];
+    
+    const option = {
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: 'rgba(240, 247, 252, 0.98)',
+            borderColor: '#84b8d8',
+            borderWidth: 1,
+            textStyle: { color: '#2c333a', fontSize: 12 },
+            borderRadius: 12,
+            formatter: function(params) {
+                if (!params) return '';
+                const arr = Array.isArray(params) ? params : [params];
+                if (!arr[0]) return '';
+                const area = arr[0].name || arr[0].axisValue || '';
+                let html = '<div class="font-bold text-[#184c78] mb-2">' + area + '</div>';
+                let total = 0;
+                arr.forEach(function(item) {
+                    if (item.value > 0) {
+                        html += '<div style="display:flex;justify-content:space-between;width:140px;margin:4px 0;">' +
+                            '<span>' + item.seriesName + '</span>' +
+                            '<span style="font-weight:bold;color:#74a8cb;">' + item.value + '处</span>' +
+                            '</div>';
+                        total += item.value;
+                    }
+                });
+                html += '<div style="border-top:1px solid #e5e7eb;margin-top:6px;padding-top:6px;">';
+                html += '<div style="font-weight:bold;color:#184c78;">合计：' + total + '处</div>';
+                html += '<div style="font-size:11px;color:#6b7280;margin-top:4px;">全局汇总：一级景源2个(28.5%)，二级景源6个(40%)，三级景源4个(25%)，四级景源3个(11.1%)</div>';
+                html += '</div>';
+                return html;
+            }
+        },
+        legend: {
+            data: ['一级景源', '二级景源', '三级景源', '四级景源'],
+            top: 0,
+            center: 'center',
+            itemWidth: 12,
+            itemHeight: 12,
+            textStyle: { color: '#6b7280', fontSize: 12 },
+            icon: 'circle'
+        },
+        grid: { left: '8%', right: '8%', bottom: '10%', top: '20%', containLabel: true },
+        backgroundColor: '#e6f2fa',
+        xAxis: {
+            type: 'category',
+            data: sourceData.map(function(d) { return d.area; }),
+            axisLabel: { color: '#6b7280', fontSize: 12 },
+            axisLine: { lineStyle: { color: '#e5e7eb' } },
+            axisTick: { show: false },
+            splitLine: { show: false }
+        },
+        yAxis: {
+            type: 'value',
+            min: 0,
+            max: 6,
+            interval: 1,
+            axisLabel: { color: '#6b7280', fontSize: 11 },
+            axisLine: { show: false },
+            axisTick: { show: false },
+            splitLine: { lineStyle: { color: '#d4e8f5', type: 'solid' } }
+        },
+        series: [
+            {
+                name: '一级景源',
+                type: 'line',
+                stack: 'total',
+                smooth: true,
+                lineStyle: { color: '#1a1a1a', width: 2 },
+                itemStyle: { color: '#1a1a1a' },
+                areaStyle: { color: 'rgba(26, 26, 26, 0.6)' },
+                emphasis: {
+                    areaStyle: { color: 'rgba(26, 26, 26, 0.8)' },
+                    lineStyle: { width: 3 }
+                },
+                data: sourceData.map(function(d) { return d.level1; })
+            },
+            {
+                name: '二级景源',
+                type: 'line',
+                stack: 'total',
+                smooth: true,
+                lineStyle: { color: '#5a9b6e', width: 2 },
+                itemStyle: { color: '#5a9b6e' },
+                areaStyle: { color: 'rgba(90, 155, 110, 0.4)' },
+                emphasis: {
+                    areaStyle: { color: 'rgba(90, 155, 110, 0.6)' },
+                    lineStyle: { width: 3 }
+                },
+                data: sourceData.map(function(d) { return d.level2; })
+            },
+            {
+                name: '三级景源',
+                type: 'line',
+                stack: 'total',
+                smooth: true,
+                lineStyle: { color: '#74a8cb', width: 2 },
+                itemStyle: { color: '#74a8cb' },
+                areaStyle: { color: 'rgba(116, 168, 203, 0.3)' },
+                emphasis: {
+                    areaStyle: { color: 'rgba(116, 168, 203, 0.5)' },
+                    lineStyle: { width: 3 }
+                },
+                data: sourceData.map(function(d) { return d.level3; })
+            },
+            {
+                name: '四级景源',
+                type: 'line',
+                stack: 'total',
+                smooth: true,
+                lineStyle: { color: '#b8d6eb', width: 2 },
+                itemStyle: { color: '#b8d6eb' },
+                areaStyle: { color: 'rgba(184, 214, 235, 0.2)' },
+                emphasis: {
+                    areaStyle: { color: 'rgba(184, 214, 235, 0.4)' },
+                    lineStyle: { width: 3 }
+                },
+                data: sourceData.map(function(d) { return d.level4; })
+            }
+        ]
+    };
+    chartCulturalStack.setOption(option);
+}
+
+function renderFlowerChart(season) {
+    const data = flowerData[season];
+    const colorMap = {
+        spring: '#f8d6e0',
+        summer: '#8db69e',
+        autumn: '#d4a86a',
+        winter: '#ffc0cb'
+    };
+    const option = {
+        tooltip: { 
+            trigger: 'axis', 
+            backgroundColor: 'rgba(240, 247, 252, 0.98)', 
+            borderColor: '#84b8d8',
+            textStyle: { color: '#2c333a' },
+            borderRadius: 12
+        },
+        grid: { left: '12%', right: '12%', bottom: '20%', top: '10%' },
+        xAxis: { 
+            type: 'category', 
+            data: ['品种数量', '栽培数量'], 
+            axisLabel: { color: '#6b7280', fontSize: 12 },
+            axisLine: { lineStyle: { color: '#e5e7eb' } },
+            axisTick: { show: false }
+        },
+        yAxis: { 
+            type: 'value', 
+            axisLabel: { color: '#6b7280', fontSize: 11 },
+            axisLine: { show: false },
+            axisTick: { show: false },
+            splitLine: { lineStyle: { color: '#e5e7eb', type: 'dashed' } }
+        },
+        series: [{
+            type: 'bar',
+            data: [data.varieties, data.count / 100],
+            itemStyle: { 
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    { offset: 0, color: colorMap[season] },
+                    { offset: 1, color: colorMap[season] + '88' }
+                ]),
+                borderRadius: [4, 4, 0, 0]
+            }
+        }]
+    };
+    chartFlower.setOption(option);
+    document.getElementById('flower-content').innerHTML = `
+        <p class="text-[#6b7280] mb-3"><strong class="text-[#206090]">${data.name}：</strong>${data.global}</p>
+        <p class="text-[#6b7280] text-sm mb-4">品种数：${data.varieties}种 | 栽培数量：${data.count}株</p>
+        <div id="chart-flower" class="chart-container"></div>
+    `;
+    chartFlower = echarts.init(document.getElementById('chart-flower'));
+    chartFlower.setOption(option);
+}
+
+function renderWorldSakuraChart() {
+    const option = {
+        tooltip: { 
+            trigger: 'axis', 
+            backgroundColor: 'rgba(240, 247, 252, 0.98)', 
+            borderColor: '#84b8d8',
+            textStyle: { color: '#2c333a' },
+            borderRadius: 12
+        },
+        xAxis: { 
+            type: 'category', 
+            data: worldSakuraData.map(d => d.name), 
+            axisLabel: { color: '#6b7280', fontSize: 12 },
+            axisLine: { lineStyle: { color: '#e5e7eb' } },
+            axisTick: { show: false }
+        },
+        yAxis: { 
+            type: 'value', 
+            name: '樱花数量（株）', 
+            axisLabel: { color: '#6b7280', fontSize: 11 },
+            axisLine: { show: false },
+            axisTick: { show: false },
+            splitLine: { lineStyle: { color: '#e5e7eb', type: 'dashed' } },
+            nameTextStyle: { color: '#6b7280', fontSize: 11 }
+        },
+        series: [{
+            type: 'bar',
+            data: worldSakuraData.map(d => d.value),
+            itemStyle: { 
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    { offset: 0, color: '#f8d6e0' },
+                    { offset: 1, color: '#f8d6e088' }
+                ]),
+                borderRadius: [4, 4, 0, 0]
+            }
+        }]
+    };
+    return option;
+}
+
+
+
+function renderPieCharts(data1, data2) {
+    const colors = ['#84b8d8', '#206090', '#d4a86a', '#f8d6e0'];
+    const option = {
+        tooltip: { 
+            trigger: 'item', 
+            backgroundColor: 'rgba(240, 247, 252, 0.98)', 
+            borderColor: '#84b8d8',
+            textStyle: { color: '#2c333a' },
+            borderRadius: 12,
+            formatter: '{b}: {c}%'
+        },
+        series: [{ 
+            type: 'pie', 
+            radius: ['45%', '75%'], 
+            avoidLabelOverlap: false, 
+            itemStyle: { borderRadius: 8 }, 
+            label: { show: true, fontSize: 11, color: '#6b7280' },
+            labelLine: { lineStyle: { color: '#e5e7eb' } }
+        }]
+    };
+    
+    const option1 = JSON.parse(JSON.stringify(option));
+    option1.color = colors;
+    option1.series[0].data = data1;
+    chartPieSakura.setOption(option1);
+    
+    const option2 = JSON.parse(JSON.stringify(option));
+    option2.color = colors;
+    option2.series[0].data = data2;
+    chartPieMayday.setOption(option2);
+}
+
+function renderAreaBarChart(filter) {
+    const areas = filter === 'all' ? Object.keys(areaFacilityData) : [filter];
+    const data = areas.map(area => ({
+        name: area,
+        coffee: areaFacilityData[area].coffee,
+        tea: areaFacilityData[area].tea,
+        bar: areaFacilityData[area].bar
+    }));
+    
+    const option = {
+        tooltip: { 
+            trigger: 'axis', 
+            backgroundColor: 'rgba(240, 247, 252, 0.98)', 
+            borderColor: '#84b8d8',
+            textStyle: { color: '#2c333a' },
+            borderRadius: 12
+        },
+        legend: { 
+            data: ['咖啡店', '茶社', '酒吧'], 
+            bottom: 10,
+            textStyle: { color: '#6b7280', fontSize: 12 }
+        },
+        grid: { left: '12%', right: '8%', bottom: '15%', top: '10%' },
+        xAxis: { 
+            type: 'value', 
+            axisLabel: { color: '#6b7280', fontSize: 11 },
+            axisLine: { show: false },
+            axisTick: { show: false },
+            splitLine: { lineStyle: { color: '#e5e7eb', type: 'dashed' } }
+        },
+        yAxis: { 
+            type: 'category', 
+            data: data.map(d => d.name), 
+            axisLabel: { color: '#6b7280', fontSize: 12 },
+            axisLine: { lineStyle: { color: '#e5e7eb' } },
+            axisTick: { show: false }
+        },
+        series: [
+            { 
+                name: '咖啡店', 
+                type: 'bar', 
+                data: data.map(d => d.coffee), 
+                itemStyle: { color: '#206090', borderRadius: [0, 4, 4, 0] } 
+            },
+            { 
+                name: '茶社', 
+                type: 'bar', 
+                data: data.map(d => d.tea), 
+                itemStyle: { color: '#84b8d8', borderRadius: [0, 4, 4, 0] } 
+            },
+            { 
+                name: '酒吧', 
+                type: 'bar', 
+                data: data.map(d => d.bar), 
+                itemStyle: { color: '#d4a86a', borderRadius: [0, 4, 4, 0] } 
+            }
+        ]
+    };
+    chartAreaBar.setOption(option);
+}
+
+function renderRadarChart(visibleIndices) {
+    const indicators = visibleIndices.map(i => ({ name: radarData.indicators[i], max: 100 }));
+    const donghuData = visibleIndices.map(i => radarData.donghu[i]);
+    const xihuData = visibleIndices.map(i => radarData.xihu[i]);
+    
+    const option = {
+        tooltip: { 
+            backgroundColor: 'rgba(240, 247, 252, 0.98)', 
+            borderColor: '#84b8d8',
+            textStyle: { color: '#2c333a' },
+            borderRadius: 12
+        },
+        legend: { 
+            data: ['东湖', '西湖'], 
+            bottom: 10,
+            textStyle: { color: '#6b7280', fontSize: 12 }
+        },
+        radar: { 
+            indicator: indicators, 
+            shape: 'polygon', 
+            splitNumber: 5,
+            axisName: { color: '#6b7280', fontSize: 12 },
+            splitLine: { lineStyle: { color: '#e5e7eb' } },
+            splitArea: { areaStyle: { color: ['#f0f7fc', '#ffffff'] } },
+            axisLine: { lineStyle: { color: '#e5e7eb' } }
+        },
+        series: [{
+            type: 'radar',
+            data: [
+                { 
+                    value: donghuData, 
+                    name: '东湖', 
+                    areaStyle: { color: 'rgba(132, 184, 216, 0.25)' }, 
+                    lineStyle: { color: '#206090', width: 2 }, 
+                    itemStyle: { color: '#206090' },
+                    symbolSize: 6
+                },
+                { 
+                    value: xihuData, 
+                    name: '西湖', 
+                    areaStyle: { color: 'rgba(141, 182, 158, 0.25)' }, 
+                    lineStyle: { color: '#8db69e', width: 2 }, 
+                    itemStyle: { color: '#8db69e' },
+                    symbolSize: 6
+                }
+            ]
+        }]
+    };
+    chartRadar.setOption(option);
+}
+
+function renderYearLineChart(year) {
+    const data = yearLineData[year];
+    const prevYear = parseInt(year) - 1;
+    const option = {
+        tooltip: { 
+            trigger: 'axis', 
+            backgroundColor: 'rgba(240, 247, 252, 0.98)', 
+            borderColor: '#84b8d8',
+            textStyle: { color: '#2c333a' },
+            borderRadius: 12
+        },
+        legend: { 
+            data: ['东湖', '西湖'], 
+            bottom: 10,
+            textStyle: { color: '#6b7280', fontSize: 12 }
+        },
+        grid: { left: '10%', right: '10%', bottom: '15%', top: '10%' },
+        xAxis: { 
+            type: 'category', 
+            data: [prevYear + '年', year + '年'], 
+            axisLabel: { color: '#6b7280', fontSize: 12 },
+            axisLine: { lineStyle: { color: '#e5e7eb' } },
+            axisTick: { show: false }
+        },
+        yAxis: { 
+            type: 'value', 
+            name: '游客量（万人次）', 
+            axisLabel: { color: '#6b7280', fontSize: 11 },
+            axisLine: { show: false },
+            axisTick: { show: false },
+            splitLine: { lineStyle: { color: '#e5e7eb', type: 'dashed' } },
+            nameTextStyle: { color: '#6b7280', fontSize: 11 }
+        },
+        series: [
+            { 
+                name: '东湖', 
+                type: 'line', 
+                data: data.donghu, 
+                lineStyle: { color: '#206090', width: 3 }, 
+                smooth: true, 
+                itemStyle: { color: '#206090' },
+                symbol: 'circle',
+                symbolSize: 10
+            },
+            { 
+                name: '西湖', 
+                type: 'line', 
+                data: data.xihu, 
+                lineStyle: { color: '#8db69e', width: 3 }, 
+                smooth: true, 
+                itemStyle: { color: '#8db69e' },
+                symbol: 'circle',
+                symbolSize: 10
+            }
+        ]
+    };
+    chartYearLine.setOption(option);
+}
+
+function showModal(title, content) {
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-content').innerHTML = content;
+    document.getElementById('modal').classList.remove('hidden');
+}
+
+function hideModal() {
+    document.getElementById('modal').classList.add('hidden');
+}
+
+function initInteractions() {
+    const sections = ['section-cover', 'section-1', 'section-2', 'section-3', 'section-xihu', 'section-6'];
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    window.addEventListener('scroll', () => {
+        const scrollPos = window.scrollY + 100;
+        
+        sections.forEach((section, index) => {
+            const element = document.getElementById(section);
+            if (element) {
+                const offsetTop = element.offsetTop;
+                const offsetHeight = element.offsetHeight;
+                
+                if (scrollPos >= offsetTop && scrollPos < offsetTop + offsetHeight) {
+                    navLinks.forEach(link => link.classList.remove('nav-active'));
+                    navLinks[index].classList.add('nav-active');
+                }
+            }
+        });
+    });
+    
+    document.getElementById('year-filter').addEventListener('change', function() {
+        const value = this.value;
+        if (value === 'all') {
+            renderVisitorRevenueChart(visitorData);
+            document.getElementById('highlight-card').classList.add('hidden');
+        } else {
+            const filtered = visitorData.filter(d => d.year === value);
+            renderVisitorRevenueChart(filtered);
+            document.getElementById('highlight-year').textContent = value + '年文旅亮点';
+            document.getElementById('highlight-content').textContent = highlightData[value];
+            document.getElementById('highlight-card').classList.remove('hidden');
+        }
+    });
+    
+    document.querySelectorAll('.flower-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.flower-tab').forEach(t => {
+                t.classList.remove('active', 'border-[#206090]', 'text-[#206090]');
+                t.classList.add('text-[#6b7280]');
+            });
+            this.classList.add('active', 'border-[#206090]', 'text-[#206090]');
+            this.classList.remove('text-[#6b7280]');
+            renderFlowerChart(this.dataset.season);
+        });
+    });
+    
+    document.getElementById('btn-flower-compare').addEventListener('click', function() {
+        const chartDiv = document.createElement('div');
+        chartDiv.style.width = '100%';
+        chartDiv.style.height = '300px';
+        const chart = echarts.init(chartDiv);
+        chart.setOption(renderWorldSakuraChart());
+        
+        showModal('世界三大赏樱地对比', '<div id="world-sakura-chart"></div>');
+        setTimeout(() => {
+            document.getElementById('world-sakura-chart').appendChild(chartDiv);
+            chart.resize();
+        }, 100);
+    });
+    
+
+    
+    document.querySelectorAll('.ecology-area').forEach(area => {
+        area.addEventListener('mouseenter', function() {
+            const tooltip = document.getElementById('ecology-tooltip');
+            document.getElementById('ecology-name').textContent = this.dataset.name;
+            document.getElementById('ecology-value').textContent = this.dataset.value;
+            tooltip.classList.remove('hidden');
+            tooltip.style.left = (parseInt(this.getAttribute('cx')) + 25) + 'px';
+            tooltip.style.top = this.getAttribute('cy') + 'px';
+        });
+        area.addEventListener('mouseleave', function() {
+            document.getElementById('ecology-tooltip').classList.add('hidden');
+        });
+    });
+    
+    document.getElementById('filter-young').addEventListener('change', function() {
+        if (this.checked) {
+            renderPieCharts(pieDataYoungSakura, pieDataYoungMayday);
+            document.getElementById('pie-analysis').textContent = '90/00后群体占比：樱花季95%，五一95%，年轻客群是东湖核心消费群体';
+        } else {
+            renderPieCharts(pieDataSakura, pieDataMayday);
+            document.getElementById('pie-analysis').textContent = '【此处替换团队正文】两张饼图联动分析客群结构差异，圈选左侧"外地游客"可同步高亮右侧对应数据';
+        }
+    });
+    
+    document.getElementById('area-filter').addEventListener('change', function() {
+        renderAreaBarChart(this.value);
+    });
+    
+    document.getElementById('shortage-card-header').addEventListener('click', function() {
+        const content = document.getElementById('shortage-content');
+        const arrow = document.getElementById('shortage-arrow');
+        content.classList.toggle('open');
+        arrow.style.transform = content.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+    });
+    
+    document.getElementById('compare-slider').addEventListener('input', function() {
+        const value = this.value;
+        const activeBtn = document.querySelector('.compare-btn.active');
+        const index = parseInt(activeBtn.dataset.index);
+        const data = compareData[index];
+        
+        if (value <= 50) {
+            document.getElementById('slider-value-dong').textContent = data.dong;
+            document.getElementById('slider-value-xi').textContent = data.xi;
+        } else {
+            document.getElementById('slider-value-dong').textContent = data.xi;
+            document.getElementById('slider-value-xi').textContent = data.dong;
+        }
+    });
+    
+    document.querySelectorAll('.compare-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.compare-btn').forEach(b => {
+                b.classList.remove('active', 'bg-[#206090]', 'text-white');
+                b.classList.add('bg-white', 'border', 'border-[#e5e7eb]', 'text-[#6b7280]');
+            });
+            this.classList.add('active', 'bg-[#206090]', 'text-white');
+            this.classList.remove('bg-white', 'border', 'border-[#e5e7eb]', 'text-[#6b7280]');
+            
+            const index = parseInt(this.dataset.index);
+            const data = compareData[index];
+            document.getElementById('slider-value-dong').textContent = data.dong;
+            document.getElementById('slider-value-xi').textContent = data.xi;
+        });
+    });
+    
+    document.querySelectorAll('.radar-checkbox').forEach((checkbox, index) => {
+        checkbox.addEventListener('change', function() {
+            const visible = [];
+            document.querySelectorAll('.radar-checkbox').forEach((cb, i) => {
+                if (cb.checked) visible.push(i);
+            });
+            renderRadarChart(visible);
+        });
+    });
+    
+    document.querySelectorAll('.year-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.year-tab').forEach(t => {
+                t.classList.remove('active', 'border-[#206090]', 'text-[#206090]');
+                t.classList.add('text-[#6b7280]');
+            });
+            this.classList.add('active', 'border-[#206090]', 'text-[#206090]');
+            this.classList.remove('text-[#6b7280]');
+            renderYearLineChart(this.dataset.year);
+        });
+    });
+    
+    document.querySelectorAll('.mind-item').forEach(item => {
+        item.addEventListener('click', function() {
+            document.querySelectorAll('.mind-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(this.dataset.target).classList.remove('hidden');
+        });
+    });
+    
+    document.getElementById('data-source-header').addEventListener('click', function() {
+        const content = document.getElementById('data-source-content');
+        const arrow = document.getElementById('data-source-arrow');
+        content.classList.toggle('open');
+        arrow.style.transform = content.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+    });
+    
+    document.getElementById('modal-close').addEventListener('click', hideModal);
+    document.getElementById('modal').addEventListener('click', function(e) {
+        if (e.target === this) hideModal();
+    });
+    
+    window.addEventListener('resize', () => {
+        chartEcologyBar && chartEcologyBar.resize();
+        chartFlowerRing && chartFlowerRing.resize();
+        chartCulturalStack && chartCulturalStack.resize();
+        chartPieSakura && chartPieSakura.resize();
+        chartPieMayday && chartPieMayday.resize();
+        chartAreaBar && chartAreaBar.resize();
+        chartRadar && chartRadar.resize();
+        chartYearLine && chartYearLine.resize();
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded triggered');
+    console.log('echarts loaded:', typeof echarts);
+    console.log('chart-visitor-revenue element:', document.getElementById('chart-visitor-revenue'));
+    
+    if (typeof echarts === 'undefined') {
+        console.error('ECharts is not loaded!');
+        document.getElementById('chart-fallback').classList.remove('hidden');
+        document.getElementById('chart-visitor-revenue').style.display = 'none';
+    } else {
+        try {
+            initCharts2();
+            console.log('initCharts2 completed');
+        } catch (e) {
+            console.error('Error in initCharts:', e);
+            document.getElementById('chart-fallback').classList.remove('hidden');
+        }
+    }
+    
+    initInteractions();
+    document.querySelector('.nav-link').classList.add('nav-active');
+});
+
+
+
+window.onload = function() {
+    console.log('window.onload triggered');
+    if (typeof chartCulturalStack !== 'undefined' && chartCulturalStack) {
+        chartCulturalStack.resize();
+        console.log('Chart resized');
+    }
+};
