@@ -20,7 +20,7 @@
 
         function toggleFontSize() {
             fontSizeIndex = (fontSizeIndex + 1) % fontSizes.length;
-            document.body.style.fontSize = fontSizes[fontSizeIndex] + 'em';
+            document.documentElement.style.setProperty('--font-scale', fontSizes[fontSizeIndex]);
         }
 
         function toggleEyeCare() {
@@ -200,7 +200,8 @@
         .accordion-content.open { max-height: 500px; }
         .modal-overlay { background: rgba(32, 96, 144, 0.2); backdrop-filter: blur(6px); }
         .sakura-petal { position: absolute; pointer-events: none; opacity: 0.25; }
-        .watermark-text { position: absolute; font-size: 120px; font-weight: 100; color: rgba(44, 51, 58, 0.12); pointer-events: none; white-space: nowrap; }
+        :root { --font-scale: 1; }
+        .watermark-text { position: absolute; font-size: calc(120px * var(--font-scale)); font-weight: 100; color: rgba(44, 51, 58, 0.12); pointer-events: none; white-space: nowrap; }
         .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         
         .title-calligraphy {
@@ -211,6 +212,8 @@
             background-clip: text;
             font-weight: normal;
             letter-spacing: 2px;
+            transform: scale(var(--font-scale));
+            transform-origin: left top;
         }
         
         .section-title {
@@ -221,13 +224,14 @@
             background-clip: text;
             font-weight: normal;
             letter-spacing: 1px;
-            font-size: 1.8rem !important;
+            font-size: calc(1.8rem * var(--font-scale)) !important;
         }
         
         .sub-title {
             font-family: var(--font-calligraphy);
             color: #84b8d8;
             font-weight: normal;
+            font-size: calc(1rem * var(--font-scale));
         }
         
         .text-indent {
@@ -235,8 +239,32 @@
         }
         
         p.text-\[\#6b7280\].leading-relaxed {
-            font-size: 1.125rem !important;
+            font-size: calc(1.125rem * var(--font-scale)) !important;
         }
+        
+        body { font-size: calc(1rem * var(--font-scale)) !important; }
+        html { font-size: calc(16px * var(--font-scale)) !important; }
+        
+        * { font-size: inherit !important; }
+        h1, h2, h3, h4, h5, h6 { font-size: inherit !important; }
+        
+        .text-xs { font-size: calc(0.75rem * var(--font-scale)) !important; }
+        .text-sm { font-size: calc(0.875rem * var(--font-scale)) !important; }
+        .text-base { font-size: calc(1rem * var(--font-scale)) !important; }
+        .text-lg { font-size: calc(1.125rem * var(--font-scale)) !important; }
+        .text-xl { font-size: calc(1.25rem * var(--font-scale)) !important; }
+        .text-2xl { font-size: calc(1.5rem * var(--font-scale)) !important; }
+        .text-3xl { font-size: calc(1.875rem * var(--font-scale)) !important; }
+        .text-4xl { font-size: calc(2.25rem * var(--font-scale)) !important; }
+        .text-5xl { font-size: calc(3rem * var(--font-scale)) !important; }
+        .text-6xl { font-size: calc(3.75rem * var(--font-scale)) !important; }
+        .text-7xl { font-size: calc(4.5rem * var(--font-scale)) !important; }
+        
+        .tooltip-title { font-weight: bold; color: #184c78; margin-bottom: 4px; font-size: calc(12px * var(--font-scale)) !important; }
+        .tooltip-text { font-size: calc(11px * var(--font-scale)) !important; color: #6b7280; margin-bottom: 4px; }
+        .tooltip-item { margin: 2px 0; font-size: calc(11px * var(--font-scale)) !important; }
+        .tooltip-divider { border-top: 1px solid #e5e7eb; margin-top: 6px; padding-top: 6px; }
+        .custom-tooltip { background: rgba(240,247,252,0.98); border: 1px solid #84b8d8; border-radius: 12px; padding: 8px 12px; font-size: calc(12px * var(--font-scale)) !important; color: #2c333a; box-shadow: 0 4px 12px rgba(0,0,0,0.1); white-space: nowrap; }
         
         .accessibility-panel {
             position: fixed;
@@ -271,7 +299,25 @@
             justify-content: center;
             margin-bottom: 6px;
             transition: all 0.2s ease;
-            font-size: 18px;
+            font-size: calc(18px * var(--font-scale)) !important;
+        }
+        
+        .access-btn-lg {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            border: none;
+            background: #f0f7fc;
+            color: #206090;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+            transition: all 0.2s ease;
+            font-size: calc(20px * var(--font-scale)) !important;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .access-btn:last-child {
@@ -314,14 +360,14 @@
 
 <!-- 侧边辅助工具栏 -->
 <div class="accessibility-panel" id="accessPanel">
-    <button id="btnFont" title="字体大小" style="position:fixed;right:18px;top:calc(50% - 70px);width:44px;height:44px;border-radius:14px;border:none;background:#f0f7fc;color:#206090;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:9999;transition:all 0.2s ease;font-size:20px;font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,0.1);" onclick="toggleFontSize()">T</button>
-    <button id="btnEyeCare" title="护眼模式" style="position:fixed;right:18px;top:calc(50% - 10px);width:44px;height:44px;border-radius:14px;border:none;background:#f0f7fc;color:#206090;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:9999;transition:all 0.2s ease;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,0.1);" onclick="toggleEyeCare()">
+    <button id="btnFont" title="字体大小" class="access-btn-lg" onclick="toggleFontSize()">T</button>
+    <button id="btnEyeCare" title="护眼模式" class="access-btn" onclick="toggleEyeCare()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
             <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7"/>
             <circle cx="12" cy="12" r="3"/>
         </svg>
     </button>
-    <button id="btnRead" title="朗读模式" style="position:fixed;right:18px;top:calc(50% + 50px);width:44px;height:44px;border-radius:14px;border:none;background:#f0f7fc;color:#206090;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:9999;transition:all 0.2s ease;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,0.1);" onclick="toggleRead()">
+    <button id="btnRead" title="朗读模式" class="access-btn" onclick="toggleRead()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
             <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
@@ -1257,7 +1303,7 @@
                             backgroundColor: 'rgba(240, 247, 252, 0.98)',
                             borderColor: '#84b8d8',
                             borderWidth: 1,
-                            textStyle: { color: '#2c333a', fontSize: 12 },
+                            textStyle: { color: '#2c333a', fontSize: 'calc(12px * var(--font-scale))' },
                             borderRadius: 12,
                             formatter: function(params) {
                                 if (!params) return '';
@@ -1266,24 +1312,24 @@
                                 var area = arr[0].name || arr[0].axisValue || '';
                                 var detail = culturalDetailData[area];
                                 if (!detail) return '';
-                                var html = '<div style="font-weight:bold;color:#184c78;margin-bottom:4px;">' + area + ' 总景源' + detail.total + '处</div>';
-                                html += '<div style="font-size:11px;color:#6b7280;margin-bottom:4px;">▫️分级统计景点（' + detail.levelCount + '处）</div>';
+                                var html = '<div class="tooltip-title">' + area + ' 总景源' + detail.total + '处</div>';
+                                html += '<div class="tooltip-text">▫️分级统计景点（' + detail.levelCount + '处）</div>';
                                 var levelNames = { level1: '一级景源', level2: '二级景源', level3: '三级景源', level4: '四级景源' };
                                 var levelColors = { level1: '#1a1a1a', level2: '#5a9b6e', level3: '#74a8cb', level4: '#b8d6eb' };
                                 ['level1', 'level2', 'level3', 'level4'].forEach(function(level) {
                                     var sites = detail.sites[level];
                                     if (sites.length > 0) {
-                                        html += '<div style="margin:2px 0;">';
-                                        html += '<span style="color:' + levelColors[level] + ';font-weight:bold;">' + levelNames[level] + '×' + sites.length + '</span>';
-                                        html += '<span style="color:#2c333a;">：' + sites.join('、') + '</span>';
+                                        html += '<div class="tooltip-item">';
+                                        html += '<span style="color:' + levelColors[level] + ';">' + levelNames[level] + '×' + sites.length + '</span>';
+                                        html += '<span>：' + sites.join('、') + '</span>';
                                         html += '</div>';
                                     }
                                 });
                                 if (detail.normalCount > 0) {
-                                    html += '<div style="font-size:11px;color:#6b7280;margin-top:4px;">▫️普通配套景观' + detail.normalCount + '处（不计入分级统计池）</div>';
+                                    html += '<div class="tooltip-text">▫️普通配套景观' + detail.normalCount + '处（不计入分级统计池）</div>';
                                 }
-                                html += '<div style="border-top:1px solid #e5e7eb;margin-top:6px;padding-top:6px;">';
-                                html += '<div style="font-size:11px;color:#6b7280;">全域汇总：<span style="color:#1a1a1a;font-weight:bold;">一级2处(28.5%)</span>、<span style="color:#5a9b6e;font-weight:bold;">二级6处(40%)</span>、<span style="color:#74a8cb;font-weight:bold;">三级4处(25%)</span>、<span style="color:#b8d6eb;font-weight:bold;">四级3处(11.1%)</span></div>';
+                                html += '<div class="tooltip-divider">';
+                                html += '<div class="tooltip-text">全域汇总：<span style="color:#1a1a1a;">一级2处(28.5%)</span>、<span style="color:#5a9b6e;">二级6处(40%)</span>、<span style="color:#74a8cb;">三级4处(25%)</span>、<span style="color:#b8d6eb;">四级3处(11.1%)</span></div>';
                                 html += '</div>';
                                 return html;
                             }
@@ -1870,7 +1916,7 @@
                 visitorIcons.forEach(function(icon) {
                     icon.addEventListener('mouseenter', function(e) {
                         var tip = this.getAttribute('data-tip');
-                        visitorIconTooltip.innerHTML = '<div style="background:rgba(240,247,252,0.98);border:1px solid #84b8d8;border-radius:12px;padding:8px 12px;font-size:12px;color:#2c333a;box-shadow:0 4px 12px rgba(0,0,0,0.1);white-space:nowrap;">' + tip + '</div>';
+                        visitorIconTooltip.innerHTML = '<div class="custom-tooltip">' + tip + '</div>';
                         visitorIconTooltip.style.left = (e.clientX + 12) + 'px';
                         visitorIconTooltip.style.top = (e.clientY - 16) + 'px';
                         visitorIconTooltip.style.opacity = '1';
@@ -2155,7 +2201,7 @@
                         clearTimeout(xihuTooltipTimeout);
                         xihuCardTooltip.style.opacity = '0';
                         var tip = this.getAttribute('data-tip');
-                        xihuCardTooltip.innerHTML = '<div style="background:rgba(240,247,252,0.98);border:1px solid #84b8d8;border-radius:12px;padding:8px 12px;font-size:12px;color:#2c333a;box-shadow:0 4px 12px rgba(0,0,0,0.1);max-width:280px;">' + tip + '</div>';
+                        xihuCardTooltip.innerHTML = '<div class="custom-tooltip">' + tip + '</div>';
                         xihuCardTooltip.style.left = (e.clientX + 15) + 'px';
                         xihuCardTooltip.style.top = (e.clientY - 20) + 'px';
                         xihuTooltipTimeout = setTimeout(function() {
@@ -2726,27 +2772,27 @@ function renderCulturalStackChart() {
             backgroundColor: 'rgba(240, 247, 252, 0.98)',
             borderColor: '#84b8d8',
             borderWidth: 1,
-            textStyle: { color: '#2c333a', fontSize: 12 },
+            textStyle: { color: '#2c333a', fontSize: 'calc(12px * var(--font-scale))' },
             borderRadius: 12,
             formatter: function(params) {
                 if (!params) return '';
                 const arr = Array.isArray(params) ? params : [params];
                 if (!arr[0]) return '';
                 const area = arr[0].name || arr[0].axisValue || '';
-                let html = '<div class="font-bold text-[#184c78] mb-2">' + area + '</div>';
+                let html = '<div class="tooltip-title">' + area + '</div>';
                 let total = 0;
                 arr.forEach(function(item) {
                     if (item.value > 0) {
-                        html += '<div style="display:flex;justify-content:space-between;width:140px;margin:4px 0;">' +
+                        html += '<div class="tooltip-item flex justify-between" style="width:140px;">' +
                             '<span>' + item.seriesName + '</span>' +
-                            '<span style="font-weight:bold;color:#74a8cb;">' + item.value + '处</span>' +
+                            '<span style="color:#74a8cb;">' + item.value + '处</span>' +
                             '</div>';
                         total += item.value;
                     }
                 });
-                html += '<div style="border-top:1px solid #e5e7eb;margin-top:6px;padding-top:6px;">';
-                html += '<div style="font-weight:bold;color:#184c78;">合计：' + total + '处</div>';
-                html += '<div style="font-size:11px;color:#6b7280;margin-top:4px;">全局汇总：一级景源2个(28.5%)，二级景源6个(40%)，三级景源4个(25%)，四级景源3个(11.1%)</div>';
+                html += '<div class="tooltip-divider">';
+                html += '<div class="tooltip-title">合计：' + total + '处</div>';
+                html += '<div class="tooltip-text">全局汇总：一级景源2个(28.5%)，二级景源6个(40%)，三级景源4个(25%)，四级景源3个(11.1%)</div>';
                 html += '</div>';
                 return html;
             }
